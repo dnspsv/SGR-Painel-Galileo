@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> SGR-Painel-Galielo </q-toolbar-title>
+        <q-toolbar-title> SGR Galielo </q-toolbar-title>
 
         <div>v{{ $q.version }}</div>
       </q-toolbar>
@@ -19,7 +19,7 @@
 
     <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Menu </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
