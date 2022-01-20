@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> SGR Galileo </q-toolbar-title>
+        <q-toolbar-title @click="$router.push({ name: 'home'})"> SGR Galileo </q-toolbar-title>
 
         <!--<div>v{{ $q.version }}</div>-->
       </q-toolbar>
@@ -25,7 +25,7 @@
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
-          @click="link.funcaoMenu(link.title)"
+          @click="link.funcaoMenu()"
         />
       </q-list>
     </q-drawer>
@@ -44,45 +44,43 @@ const linksList = [
     title: "Ingredientes",
     caption: "Ingredientes",
     icon: "list",
-    link: "#",
-    funcaoMenu: (msg) => {
-      alert(msg);
-    },
+    link: "autorizado/ingredientes",
+    funcaoMenu: () => {},
   },
   {
     title: "Receitas",
     caption: "Só as melhores",
     icon: "work",
-    link: "#",
+     link: "autorizado/receitas",
     funcaoMenu: (msg) => {
-      alert(msg);
+      
     },
   },
   {
     title: "Lojas",
     caption: "Lojas conectadas",
     icon: "store",
-    link: "#",
+     link: "autorizado/lojas",
     funcaoMenu: (msg) => {
-      alert(msg);
+   
     },
   },
   {
     title: "Usuários",
     caption: "Usuários do sistema",
     icon: "person",
-    link: "#",
+     link: "autorizado/usuarios",
     funcaoMenu: (msg) => {
-      alert(msg);
+    
     },
   },
   {
     title: "Logout",
     caption: "Sair do sistema",
     icon: "exit_to_app",
-    link: "#",
+    link: "/",
     funcaoMenu: (msg) => {
-      alert(msg);
+     
     },
   },
 ];
