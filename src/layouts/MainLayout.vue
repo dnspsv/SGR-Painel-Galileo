@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="bg-black">
         <q-btn
           flat
           dense
@@ -11,15 +11,15 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> SGR Galielo </q-toolbar-title>
+        <q-toolbar-title> SGR Galileo </q-toolbar-title>
 
-        <div>v{{ $q.version }}</div>
+        <!--<div>v{{ $q.version }}</div>-->
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
-        <q-item-label header> Menu </q-item-label>
+        <q-item-label header class="bg-black text-white"> Menu </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -40,6 +40,42 @@
 import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
+  {
+    title: "Ingredientes",
+    caption: "Ingredientes",
+    icon: "list",
+    link: "#",
+    funcaoMenu: (msg) => {
+      alert(msg);
+    },
+  },
+  {
+    title: "Receitas",
+    caption: "Só as melhores",
+    icon: "work",
+    link: "#",
+    funcaoMenu: (msg) => {
+      alert(msg);
+    },
+  },
+  {
+    title: "Lojas",
+    caption: "Lojas conectadas",
+    icon: "store",
+    link: "#",
+    funcaoMenu: (msg) => {
+      alert(msg);
+    },
+  },
+  {
+    title: "Usuários",
+    caption: "Usuários do sistema",
+    icon: "person",
+    link: "#",
+    funcaoMenu: (msg) => {
+      alert(msg);
+    },
+  },
   {
     title: "Logout",
     caption: "Sair do sistema",

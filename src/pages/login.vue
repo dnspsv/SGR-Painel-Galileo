@@ -1,7 +1,6 @@
 <template>
   <q-page padding class="flex flex-center bg-grey-4">
-
-    <q-card class="my-card" style="width: 320px; padding:10px;">
+    <q-card class="my-card" style="width: 320px; padding: 10px">
       <q-card-section class="text-center">
         <p class="text-h3">SGR Galileo</p>
       </q-card-section>

@@ -140,9 +140,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
-        description: `A Quasar Framework app`,
+        name: `SGR Galileo`,
+        short_name: `SGR Galileo`,
+        description: `SGR Galileo Painel de gerenciamento de receitas`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
