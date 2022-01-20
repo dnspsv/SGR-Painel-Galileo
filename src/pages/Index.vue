@@ -1,26 +1,16 @@
 <template>
   <q-page class="">
-    <div class="q-pa-md row items_start q-gutter-md flex flex-center" style="max-heigth:50px">
+    <div
+      class="q-pa-md row items_start q-gutter-md flex flex-center"
+      style="max-heigth: 50px"
+    >
       <div v-for="info in dados" :key="info.uuid_receita" style="width: 100%">
         <q-card class="my-card bg-primary">
           <q-card-section class="flex flex-rigth">
-            
-            <div class="row">
-              <div class="col-9">
-                <div class="text-h6">{{ info.nm_receita }}</div>
-                <div class="text-subtitle2">{{ info.nm_receita }}</div>
-                <div class="text-subtitle2">{{ info.data_criacao }}</div>
-              </div>
-              <div class="col-3 right" align="right">
-                <img 
-                  class="row rigth"
-                  style="width: 120px"
-                  v-if="info.img_receita !== ''"
-                  :src="info.img_receita"
-                  alt="Imagem da receita"
-                />
-              </div>
-
+            <div class="column">
+              <div class="text-h6">{{ info.nm_receita }}</div>
+              <div class="text-subtitle2">{{ info.nm_receita }}</div>
+              <div class="text-subtitle2">{{ info.data_criacao }}</div>
             </div>
           </q-card-section>
           <q-card-actions align="right">
