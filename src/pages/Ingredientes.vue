@@ -1,7 +1,9 @@
 <template>
   <q-page class="container" padding>
-   
-    <p class="text-h4" >INGREDIENTES</p>
+   <div class="flex justify-center"> 
+     <p class="text-h4" >INGREDIENTES</p>
+   </div>
+    
     
       <q-form @submit="onSubmit" @reset="onReset" class="row q-col-gutter-md" ref="formIngrediente">
         <q-input 
@@ -13,7 +15,7 @@
           class="col-md-12 col-sm-12 col-xs-12" 
           color="black"
           :rules="[
-          val=> val && val.length > 0 || 'Nome obrigatório'
+            val=> val && val.length > 0 || 'Nome obrigatório'
           ]"
           >
             <template v-slot:prepend>
