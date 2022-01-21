@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="row">
-      <div class="col">
+      <div class="col q-mt-sm">
           <p class="text-h4">INGREDIENTES</p>
       </div>
     </div>
