@@ -1,6 +1,10 @@
 <template>
-  <q-page class="">
-    <p class="text-h4">ingredientes</p>
+  <q-page>
+    <div class="row">
+      <div class="col">
+          <p class="text-h4">INGREDIENTES</p>
+      </div>
+    </div>
   </q-page>
 </template>
 
