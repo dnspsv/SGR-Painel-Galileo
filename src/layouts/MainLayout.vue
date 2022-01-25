@@ -66,6 +66,15 @@ const linksList = [
     },
   },
   {
+    title: "Unidades",
+    caption: "Unidades de medida",
+    icon: "speed",
+     link: "autorizado/unidades",
+    funcaoMenu: (msg) => {
+    
+    },
+  },
+  {
     title: "Usuários",
     caption: "Usuários do sistema",
     icon: "person",
