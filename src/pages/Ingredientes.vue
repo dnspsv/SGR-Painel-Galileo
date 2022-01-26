@@ -1,10 +1,7 @@
 <template>
   <q-page class="content">
     <div class="row flex justify-center">
-      <div
-        class="col-md-6 col-xs-12"
-        style=" padding: 10px"
-      >
+      <div class="col-md-6 col-xs-12" style="padding: 10px">
         <div class="flex justify-center">
           <p class="text-h4">INGREDIENTES</p>
         </div>
@@ -28,7 +25,7 @@
                 (val && val.length > 0) ||
                 'O nome do ingrediente é obrigatório',
             ]"
-            style="text-transform: uppercase;"
+            style="text-transform: uppercase"
           >
             <template v-slot:prepend>
               <q-icon name="view_array" />
@@ -43,7 +40,7 @@
             label="Observações"
             class="col-md-12 col-sm-12 col-xs-12"
             color="black"
-            style="text-transform: uppercase; padding-bottom:15px;"
+            style="text-transform: uppercase; padding-bottom: 15px"
           >
             <template v-slot:prepend>
               <q-icon name="note_add" />
@@ -85,7 +82,7 @@
         </q-form>
       </div>
 
-      <div class="col-md-6 col-xs-12" style="">
+      <div class="col-md-6 col-xs-12" style="overflow-y: scroll; height: 600px">
         <div
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
@@ -97,36 +94,49 @@
             outlined
             v-model="pesquisa"
             label="Pesquisar Ingredientes"
+            @input="pesquisa = $event.target.value"
           >
             <template v-slot:append>
               <q-icon name="search" color="primary" />
             </template>
           </q-input>
+          
           <div
-            v-for="info in dados"
+            v-for="info in comFiltro"
             :key="info.uuid_ingrediente"
             style="width: 100%"
           >
             <q-card class="my-card bg-grey-3">
               <q-card-section class="flex flex-rigth">
                 <div class="column">
-                  <input type="hidden" value="{{ info.uuid_ingrediente }}" />
+                  <input type="hidden" :value="info.uuid_ingrediente" />
                   <div class="text-h6">{{ info.nm_ingrediente }}</div>
                   <div class="text-subtitle2">{{ info.obs_ingrediente }}</div>
-                  <div class="text-subtitle2">{{ info.data_criacao }}</div>
+                  <!-- <div class="text-subtitle2">Cadastrado em: {{ info.data_criacao }}</div> -->
                 </div>
               </q-card-section>
               <q-card-actions align="right">
-                <q-btn size="xs" round icon="edit" color="primary" title="Editar um ingrediente" @click="editar(info)" />
-                <q-btn size="xs" round icon="delete" color="red" title="Excluir um ingrediente" />
+                <q-btn
+                  size="xs"
+                  round
+                  icon="edit"
+                  color="primary"
+                  title="Editar um ingrediente"
+                  @click="editar(info)"
+                />
+                <q-btn
+                  size="xs"
+                  round
+                  icon="delete"
+                  color="red"
+                  title="Excluir um ingrediente"
+                />
               </q-card-actions>
             </q-card>
           </div>
         </div>
       </div>
     </div>
-
-    
   </q-page>
 </template>
 
@@ -150,6 +160,18 @@ export default defineComponent({
       },
     };
   },
+
+  computed: {
+    comFiltro() {
+      if (this.pesquisa) {
+        let exp = new RegExp(this.pesquisa.trim(), "i");
+        return this.dados.filter((dado) => exp.test(dado.nm_ingrediente));
+      } else {
+        return this.dados;
+      }
+    },
+  },
+
   created() {
     axios
       .get("http://localhost:3030/unidades", {
@@ -191,15 +213,15 @@ export default defineComponent({
         status_ingrediente: this.dense,
       };
 
-      if(this.dense===false){
-       if (confirm('Deseja realmente desativar o ingrediente?')===false) 
-        return '';
+      if (this.dense === false) {
+        if (confirm("Deseja realmente desativar o ingrediente?") === false)
+          return "";
       }
 
       if (this.form.uuid === "") {
-         this.gravarDados(dadosEnvio);
+        this.gravarDados(dadosEnvio);
       } else {
-         this.alterarDados(dadosEnvio);
+        this.alterarDados(dadosEnvio);
       }
 
       this.$q.notify({
@@ -259,6 +281,10 @@ export default defineComponent({
           this.listagem();
         })
         .catch((error) => console.log(error));
+    },
+    async ajustarDataBr(dataHora) {
+      data = new Date(dataHora);
+      return data.toLocaleDateString("pt-BR", { timeZone: "UTC" });
     },
   },
 });

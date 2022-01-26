@@ -84,7 +84,7 @@ const linksList = [
     },
   },
   {
-    title: "Logout",
+    title: "Sair",
     caption: "Sair do sistema",
     icon: "exit_to_app",
     link: "/",
