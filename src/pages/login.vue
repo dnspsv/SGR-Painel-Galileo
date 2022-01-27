@@ -42,6 +42,7 @@
           color="black"
           label="Esquecia a senha"
           style="width: 100%"
+          @click="armazenarUsuario"
         />
       </q-card-actions>
     </q-card>
@@ -49,7 +50,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "Login",
   data() {
     return {
@@ -60,5 +62,12 @@ export default {
       },
     };
   },
-};
+  created() {},
+  methods: {
+    armazenarUsuario() {
+      localStorage.nome = "DENIS ROBERTO DE CASTRO";
+      localStorage.nivel = 2;
+    },
+  },
+});
 </script>

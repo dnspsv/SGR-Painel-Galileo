@@ -1,29 +1,35 @@
 <template>
   <q-page class="content">
-    <div class="row flex" style="padding: 10px">
-      <q-btn
-        size="sm"
-        icon="note_add"
-        color="black"
-        title="Adicionar uma receita"
-        @click="addForm()"
-      />
-      <q-btn
-        size="sm"
-        icon="note"
-        color="black"
-        title="Listar uma receita"
-        @click="addForm()"
-        style="margin-left: 10px"
-      />
-      <q-btn
-        size="sm"
-        icon="send"
-        color="black"
-        title="Enviar para as lojas"
-        @click="addForm()"
-        style="margin-left: 10px"
-      />
+    <div class="row flex bg-grey-4" style="padding: 10px">
+      <div class="col-7 text-left">
+        {{ nivelUsuario > 0 ? "Administrador: " : "Loja: " }}
+        {{ nomeUsuario }}
+      </div>
+      <div class="col-5 text-right">
+        <q-btn
+          size="sm"
+          icon="note_add"
+          color="black"
+          title="Adicionar uma receita"
+          @click="addForm()"
+        />
+        <q-btn
+          size="sm"
+          icon="note"
+          color="black"
+          title="Listar uma receita"
+          @click="addForm()"
+          style="margin-left: 10px"
+        />
+        <q-btn
+          size="sm"
+          icon="send"
+          color="black"
+          title="Enviar para as lojas"
+          @click="addForm()"
+          style="margin-left: 10px"
+        />
+      </div>
     </div>
     <div class="row flex justify-center">
       <div
@@ -43,7 +49,7 @@
             outlined
             clearable
             type="text"
-            v-model="form.nome"
+            v-model="form.nm_receita"
             label="Nome da Receita"
             class="col-md-10 col-sm-10 col-xs-10"
             color="black"
@@ -119,27 +125,39 @@
 </template>
 
 <script>
-import axios from "axios";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "PageReceitas",
   data() {
     return {
+      pesquisa: "",
+      nomeUsuario: "",
+      nivelUsuario: "",
       novo: false,
       dados: [],
       form: {
-        nome: "",
+        nm_receita: "",
       },
     };
   },
-  created() {
+  created() {},
+
+  mounted() {
+    this.nomeUsuario = localStorage.nome;
+    this.nivelUsuario = localStorage.nivel;
+
+    if (!this.nomeUsuario) {
+      alert("Login incorreto");
+      this.$router.replace({ name: "login" });
+      return;
+    }
+
     this.listagem();
   },
 
   methods: {
     addForm() {
-      if (!this.novo) this.novo = true;
-      else this.novo = false;
+      !this.novo ? (this.novo = true) : (this.novo = false);
     },
     listagem() {
       this.$api

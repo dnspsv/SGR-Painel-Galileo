@@ -82,7 +82,10 @@ const linksList = [
     caption: "Sair do sistema",
     icon: "exit_to_app",
     link: "/",
-    funcaoMenu: (msg) => {},
+    funcaoMenu: (msg) => {
+       localStorage.removeItem('nome');
+       localStorage.removeItem('nivel');
+    },
   },
 ];
 
