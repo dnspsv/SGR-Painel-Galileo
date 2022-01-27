@@ -36,7 +36,7 @@
             <q-btn
               label="Gravar"
               type="submit"
-              color="primary"
+              color="black"
               class="float-right"
               icon="save"
             />
@@ -61,11 +61,11 @@
             :key="info.uuid_unidade"
             style="width: 100%"
           >
-            <q-card class="my-card bg-grey-3">
+            <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_unidade" />
-                  <div class="text-h6">{{ info.sigla_unidade }}</div>
+                  <div class="text-h4">{{ info.sigla_unidade }}</div>
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -73,11 +73,10 @@
                   size="xs"
                   round
                   icon="edit"
-                  color="primary"
+                  color="black"
                   title="Editar uma unidade"
                   @click="editar(info)"
                 />
-             
               </q-card-actions>
             </q-card>
           </div>
@@ -106,8 +105,8 @@ export default defineComponent({
   },
   methods: {
     listagem() {
-      axios
-        .get("http://localhost:3030/unidades", {
+      this.$api
+        .get("/unidades", {
           headers: { "Content-Type": "application/json" },
         })
         .then(
@@ -149,8 +148,8 @@ export default defineComponent({
       };
     },
     gravarDados(dadosEnvio) {
-      axios
-        .post("http://localhost:3030/unidades", dadosEnvio)
+      this.$api
+        .post("/unidades", dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();
@@ -158,11 +157,8 @@ export default defineComponent({
         .catch((error) => console.log(error));
     },
     alterarDados(dadosEnvio) {
-      axios
-        .put(
-          "http://localhost:3030/unidades/" + this.form.uuid_unidade,
-          dadosEnvio
-        )
+      this.$api
+        .put("/unidades/" + this.form.uuid_unidade, dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();

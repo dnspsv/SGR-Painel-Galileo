@@ -59,7 +59,7 @@
             ]"
           />
           <div class="q-pb-lg">
-            <q-toggle v-model="dense" label="Ativar Ingrediente" />
+            <q-toggle color="black" v-model="dense" label="Ativar Ingrediente" />
           </div>
 
           <div class="col-12">
@@ -67,7 +67,7 @@
             <q-btn
               label="Gravar"
               type="submit"
-              color="primary"
+              color="black"
               class="float-right"
               icon="save"
             />
@@ -97,7 +97,7 @@
             @input="pesquisa = $event.target.value"
           >
             <template v-slot:append>
-              <q-icon name="search" color="primary" />
+              <q-icon name="search" color="black" />
             </template>
           </q-input>
           
@@ -106,7 +106,7 @@
             :key="info.uuid_ingrediente"
             style="width: 100%"
           >
-            <q-card class="my-card bg-grey-3">
+            <q-card class="my-card  bg-grey-2" bordered >
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_ingrediente" />
@@ -120,17 +120,11 @@
                   size="xs"
                   round
                   icon="edit"
-                  color="primary"
+                  color="black"
                   title="Editar um ingrediente"
                   @click="editar(info)"
                 />
-                <q-btn
-                  size="xs"
-                  round
-                  icon="delete"
-                  color="red"
-                  title="Excluir um ingrediente"
-                />
+               
               </q-card-actions>
             </q-card>
           </div>
@@ -173,8 +167,8 @@ export default defineComponent({
   },
 
   created() {
-    axios
-      .get("http://localhost:3030/unidades", {
+    this.$api
+      .get("/unidades", {
         headers: { "Content-Type": "application/json" },
       })
       .then(
@@ -253,8 +247,8 @@ export default defineComponent({
       //this.model = { name: info.tb_unidade.sigla_unidade, value: info.tb_unidade.uuid_unidade };
     },
     async listagem() {
-      axios
-        .get("http://localhost:3030/ingredientes", {
+      this.$api
+        .get("/ingredientes", {
           headers: { "Content-Type": "application/json" },
         })
         .then(
@@ -265,19 +259,17 @@ export default defineComponent({
         );
     },
     gravarDados(dadosEnvio) {
-      axios
-        .post("http://localhost:3030/ingredientes", dadosEnvio)
+      this.$api
+        .post("/ingredientes", dadosEnvio)
         .then((response) => {
-          console.log(response);
           this.listagem();
         })
         .catch((error) => console.log(error));
     },
     alterarDados(dadosEnvio) {
-      axios
-        .put("http://localhost:3030/ingredientes/" + this.form.uuid, dadosEnvio)
+      this.$api
+        .put("/ingredientes/" + this.form.uuid, dadosEnvio)
         .then((response) => {
-          console.log(response);
           this.listagem();
         })
         .catch((error) => console.log(error));
@@ -289,3 +281,4 @@ export default defineComponent({
   },
 });
 </script>
+ 

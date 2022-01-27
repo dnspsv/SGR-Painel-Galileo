@@ -56,7 +56,7 @@
             <q-btn
               label="Gravar"
               type="submit"
-              color="primary"
+              color="black"
               class="float-right"
               icon="save"
             />
@@ -81,7 +81,7 @@
             :key="info.uuid_loja"
             style="width: 100%"
           >
-            <q-card class="my-card bg-grey-3">
+            <q-card class="my-card bg-grey-2" bordered >
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_loja" />
@@ -95,7 +95,7 @@
                   size="xs"
                   round
                   icon="edit"
-                  color="primary"
+                  color="black"
                   title="Editar uma loja"
                   @click="editar(info)"
                 />
@@ -177,8 +177,8 @@ export default defineComponent({
       };
     },
     gravarDados(dadosEnvio) {
-      axios
-        .post("http://localhost:3030/lojas", dadosEnvio)
+      this.$api
+        .post("/lojas", dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();
@@ -186,9 +186,9 @@ export default defineComponent({
         .catch((error) => console.log(error));
     },
     alterarDados(dadosEnvio) {
-      axios
+      this.$api
         .put(
-          "http://localhost:3030/lojas/" + this.form.uuid_loja,
+          "/lojas/" + this.form.uuid_loja,
           dadosEnvio
         )
         .then((response) => {

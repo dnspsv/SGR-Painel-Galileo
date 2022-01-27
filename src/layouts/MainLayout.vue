@@ -11,15 +11,17 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title @click="$router.push({ name: 'home'})"> SGR Galileo </q-toolbar-title>
+        <q-toolbar-title @click="$router.push({ name: 'home' })">
+          SGR Galileo
+        </q-toolbar-title>
 
         <!--<div>v{{ $q.version }}</div>-->
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" bordered>
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
       <q-list>
-        <q-item-label header class="bg-black text-white"> Menu </q-item-label>
+      
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -30,7 +32,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-1">
+    <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
@@ -49,48 +51,38 @@ const linksList = [
   },
   {
     title: "Receitas",
-    caption: "Só as melhores",
+    caption: "Gerenciamneto das receitas",
     icon: "work",
-     link: "autorizado/receitas",
-    funcaoMenu: (msg) => {
-      
-    },
+    link: "autorizado/receitas",
+    funcaoMenu: (msg) => {},
   },
   {
     title: "Lojas",
     caption: "Lojas conectadas",
     icon: "store",
-     link: "autorizado/lojas",
-    funcaoMenu: (msg) => {
-   
-    },
+    link: "autorizado/lojas",
+    funcaoMenu: (msg) => {},
   },
   {
     title: "Unidades",
     caption: "Unidades de medida",
     icon: "speed",
-     link: "autorizado/unidades",
-    funcaoMenu: (msg) => {
-    
-    },
+    link: "autorizado/unidades",
+    funcaoMenu: (msg) => {},
   },
   {
     title: "Usuários",
     caption: "Usuários do sistema",
     icon: "person",
-     link: "autorizado/usuarios",
-    funcaoMenu: (msg) => {
-    
-    },
+    link: "autorizado/usuarios",
+    funcaoMenu: (msg) => {},
   },
   {
     title: "Sair",
     caption: "Sair do sistema",
     icon: "exit_to_app",
     link: "/",
-    funcaoMenu: (msg) => {
-     
-    },
+    funcaoMenu: (msg) => {},
   },
 ];
 

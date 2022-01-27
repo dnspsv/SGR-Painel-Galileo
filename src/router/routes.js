@@ -11,7 +11,7 @@ const routes = [
     path: "/autorizado",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", name: "home", component: () => import("pages/Index.vue") },
+      { path: "", name: "home", component: () => import("pages/Receitas.vue") },
       {
         path: "ingredientes",
         name: "ingredientes",

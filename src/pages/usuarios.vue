@@ -87,6 +87,7 @@
 
           <q-select
             name="nivel_usuario"
+            id="nivel_usuario"
             outlined
             v-model="model"
             :options="niveis"
@@ -95,7 +96,7 @@
             :rules="[(val) => val || 'Selecione um nível é obrigatório']"
           />
           <div class="q-pb-lg">
-            <q-toggle v-model="dense" label="Ativar Usuário" />
+            <q-toggle color="black" v-model="dense" label="Ativar Usuário" />
           </div>
 
           <div class="col-12">
@@ -103,7 +104,7 @@
             <q-btn
               label="Gravar"
               type="submit"
-              color="primary"
+              color="black"
               class="float-right"
               icon="save"
             />
@@ -124,12 +125,15 @@
           style="max-heigth: 50px"
         >
           <div v-for="info in dados" :key="info.uuid_loja" style="width: 100%">
-            <q-card class="my-card bg-grey-3">
+            <q-card class="my-card bg-grey-2" bordered >
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_usuario" />
-                  <div class="text-h6">Nome: {{ info.nm_usuario }}</div>
-                  <div class="text-h6">Email: {{ info.email_usuario }}</div>
+                  <div class="text-subtitle2">Nome: {{ info.nm_usuario }}</div>
+                  <div class="text-subtitle2">Email: {{ info.email_usuario }}</div>
+                  <div class="text-subtitle2">Fone: {{ info.fone_usuario }}</div>
+                  <div class="text-subtitle2">Nível: {{ info.nivel_usuario > 1 ? 'Administrador' : 'Loja' }}</div>
+                  <div class="text-subtitle2">Estado: {{ info.status_usuario===true ? 'Ativado' : 'Desativado' }}</div>
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -137,7 +141,7 @@
                   size="xs"
                   round
                   icon="edit"
-                  color="primary"
+                  color="black"
                   title="Editar uma loja"
                   @click="editar(info)"
                 />
@@ -163,17 +167,14 @@ export default defineComponent({
       dados: [],
       niveis: [
         {
-          label: "Cozinha",
-          value: 1,
-        },
-        {
-          label: "Gerente",
+          label: "Administrador",
           value: 2,
         },
         {
-          label: "Administrador",
-          value: 3,
-        },
+          label: "Loja",
+          value: 1,
+        },     
+        
       ],
       form: {
         uuid_usuario: "",
@@ -182,6 +183,7 @@ export default defineComponent({
         senha_usuario: "",
         telefone: "",
         nivel_usuario: "",
+        status_usuario: ""
       },
     };
   },
@@ -190,8 +192,8 @@ export default defineComponent({
   },
   methods: {
     listagem() {
-      axios
-        .get("http://localhost:3030/usuarios", {
+      this.$api
+        .get("/usuarios", {
           headers: { "Content-Type": "application/json" },
         })
         .then(
@@ -202,21 +204,33 @@ export default defineComponent({
         );
     },
     editar(dados) {
-      this.form.uuid_usuario = dados.uuid_loja;
-      this.form.nm_usuario = dados.cd_loja;
-      this.form.email_usuario = dados.nm_loja;
-      this.senha_usuario = dados.senha_usuario;
-      this.status_usuario = dados.status_usuario;
-      this.telefone = dados.telefone_usuario;
-      this.nivel_usuario = dados.nivel_usuario;
+      this.form.uuid_usuario = dados.uuid_usuario;
+      this.form.nm_usuario = dados.nm_usuario;
+      this.form.email_usuario = dados.email_usuario;
+      this.form.senha_usuario = dados.senha_usuario;
+      this.form.status_usuario = dados.status_usuario;
+      this.form.telefone = dados.fone_usuario;
+      this.form.nivel_usuario = dados.nivel_usuario;
     },
-    async onSubmit() {
+    async onSubmit(evt) {
+
+      const formData = new FormData(evt.target);
+      const data = [];
+
+      for (const [name, value] of formData.entries()) {
+        data.push({
+          name,
+          value,
+        });
+      }
+      
+
       const dadosEnvio = {
-        nm_lusuario: this.form.nm_usuario,
+        nm_usuario: this.form.nm_usuario,
         email_usuario: this.form.email_usuario,
         senha_usuario: this.form.senha_usuario,
-        nivel_usuario: this.form.nivel_usuario,
-        telefone_usuario: this.form.telefone,
+        nivel_usuario: data[0].value,
+        fone_usuario: this.form.telefone,
         status_usuario: this.dense,
       };
 
@@ -236,7 +250,7 @@ export default defineComponent({
     },
     async onReset() {
       await this.resetForm();
-      this.$refs.loja.resetValidation();
+      this.$refs.usuario.resetValidation();
     },
     async resetForm() {
       (this.model = ref(null)),
@@ -250,8 +264,8 @@ export default defineComponent({
         });
     },
     gravarDados(dadosEnvio) {
-      axios
-        .post("http://localhost:3030/usuarios", dadosEnvio)
+      this.$api
+        .post("/usuarios", dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();
@@ -259,9 +273,9 @@ export default defineComponent({
         .catch((error) => console.log(error));
     },
     alterarDados(dadosEnvio) {
-      axios
+      this.$api
         .put(
-          "http://localhost:3030/usuarios/" + this.form.uuid_usuario,
+          "/usuarios/" + this.form.uuid_usuario,
           dadosEnvio
         )
         .then((response) => {
