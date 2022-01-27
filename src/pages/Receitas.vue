@@ -1,11 +1,12 @@
 <template>
   <q-page class="content">
     <div class="row flex bg-grey-4" style="padding: 10px">
-      <div class="col-7 text-left">
+      <div class="col-xs-12 col-sm-6 text-left">
         {{ nivelUsuario > 0 ? "Administrador: " : "Loja: " }}
+        <br/>
         {{ nomeUsuario }}
       </div>
-      <div class="col-5 text-right">
+      <div class="col-xs-12 col-sm-6 text-right">
         <q-btn
           size="sm"
           icon="note_add"
