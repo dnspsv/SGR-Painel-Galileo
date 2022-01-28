@@ -6,6 +6,7 @@
         <br/>
         {{ nomeUsuario }}
       </div>
+      
       <div class="col-xs-12 col-sm-6 text-right">
         <q-btn
           size="sm"

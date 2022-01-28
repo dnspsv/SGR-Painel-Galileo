@@ -5,7 +5,6 @@
         <div class="flex justify-center">
           <p class="text-h4">INGREDIENTES</p>
         </div>
-
         <q-form
           @submit="onSubmit"
           @reset="onReset"

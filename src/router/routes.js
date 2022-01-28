@@ -6,7 +6,6 @@ const routes = [
       { path: "", name: "login", component: () => import("pages/login.vue") },
     ],
   },
-
   {
     path: "/autorizado",
     component: () => import("layouts/MainLayout.vue"),
