@@ -1,21 +1,22 @@
 <template>
   <q-page class="content">
-    <div class="row flex bg-grey-4" style="padding: 10px">
+    <!--    <div class="row flex bg-grey-4" style="padding: 10px">
       <div class="col-xs-12 col-sm-6 text-left text-caption">
         {{ nivelUsuario > 0 ? "Administrador: " : "Loja: " }}
         <br />
         {{ nomeUsuario }}
       </div>
-    </div>
+    </div> -->
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
         <div class="text-h6 flex justify-center">RECEITAS</div>
         <q-form
-          @submit="onSubmit"
-          @reset="onReset"
+          @submit="onSubmitReceita"
+          @reset="onResetReceita"
           class="row q-col-gutter-md"
           ref="formReceita"
         >
+          <input type="hidden" v-model="form.uuid_receita" />
           <q-input
             outlined
             clearable
@@ -57,7 +58,7 @@
               outlined
               clearable
               type="text"
-              v-model="form.nm_receita"
+              v-model="form.nm_ingrediente"
               label="Ingrediente"
               class="col-md-6 col-sm-6 col-xs-6"
               color="black"
@@ -75,7 +76,7 @@
               outlined
               clearable
               type="text"
-              v-model="form.nm_receita"
+              v-model="form.qtde_ingrediente"
               label="QTDE"
               class="col-md-4 col-sm-4 col-xs-4"
               color="black"
@@ -123,7 +124,7 @@
               outlined
               clearable
               type="text"
-              v-model="form.nm_receita"
+              v-model="form.nm_modo"
               label="Modo de preparo"
               class="col-md-7 col-sm-7 col-xs-7"
               color="black"
@@ -216,7 +217,11 @@ export default defineComponent({
       niveis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
       model: ref(1),
       form: {
+        uuid_receita: "",
         nm_receita: "",
+        nm_ingrediente: "",
+        qtde_ingrediente: "",
+        nm_modo: "",
       },
     };
   },
@@ -251,7 +256,7 @@ export default defineComponent({
           (err) => console.log(err)
         );
     },
-    onSubmit() {
+    onSubmitReceita() {
       this.$q.notify({
         message: "cadastrado com sucesso",
         color: "positive",
@@ -265,8 +270,16 @@ export default defineComponent({
     },
     async resetForm() {
       this.form = {
-        nome: "",
+        uuid_receita: "",
+        nm_receita: "",
+        nm_ingrediente: "",
+        qtde_ingrediente: "",
+        nm_modo: "",
       };
+    },
+    editar(dados) {
+      this.form.uuid_receita = dados.uuid_receita;
+      this.form.nm_receita = dados.nm_receita;
     },
   },
 });

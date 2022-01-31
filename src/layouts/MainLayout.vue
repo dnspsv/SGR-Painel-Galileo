@@ -9,6 +9,7 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
+          
         />
 
         <q-toolbar-title @click="$router.push({ name: 'home' })">
@@ -20,9 +21,23 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <q-list>
-      
+      <div
+        class="row flex bg-grey-3"
+        style="padding: 20px; border-bottom: 1px solid #ccc"
+      >
+        <div class="col-xs-3 col-sm-3 text-caption">
+          <q-avatar text-color="white" color="black">{{
+            inicial
+          }}</q-avatar>
+        </div>
+        <div class="col-xs-8 col-sm-9 text-caption" text-color="white">
+          {{ nivel > 0 ? "Administrador: " : "Loja: " }}
+          <br />
+          {{ nome }}
+        </div>
+      </div>
 
+      <q-list>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -83,8 +98,8 @@ const linksList = [
     icon: "exit_to_app",
     link: "/",
     funcaoMenu: (msg) => {
-       localStorage.removeItem('nome');
-       localStorage.removeItem('nivel');
+      localStorage.removeItem("nome");
+      localStorage.removeItem("nivel");
     },
   },
 ];
@@ -93,9 +108,22 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "MainLayout",
+   data(){
+    return{
+      nome : "",
+      inicial:"", 
+      nivel:""
+    }
+  },
 
   components: {
     EssentialLink,
+  },
+ 
+  mounted(){
+    this.nome = localStorage.nome;
+    this.inicial = localStorage.nome[0]; 
+    this.nivel = localStorage.nivel;
   },
 
   setup() {

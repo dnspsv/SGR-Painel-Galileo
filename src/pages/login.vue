@@ -63,7 +63,10 @@ export default defineComponent({
     };
   },
   
-  created() {},
+  created() {
+    localStorage.nome = "";
+    localStorage.nivel = ""; 
+  },
   methods: {
     armazenarUsuario() {
       localStorage.nome = "DENIS ROBERTO DE CASTRO";
