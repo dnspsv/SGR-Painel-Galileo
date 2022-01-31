@@ -1,44 +1,14 @@
 <template>
   <q-page class="content">
     <div class="row flex bg-grey-4" style="padding: 10px">
-      <div class="col-xs-12 col-sm-6 text-left">
+      <div class="col-xs-12 col-sm-6 text-left text-caption">
         {{ nivelUsuario > 0 ? "Administrador: " : "Loja: " }}
-        <br/>
+        <br />
         {{ nomeUsuario }}
-      </div>
-      
-      <div class="col-xs-12 col-sm-6 text-right">
-        <q-btn
-          size="sm"
-          icon="note_add"
-          color="black"
-          title="Adicionar uma receita"
-          @click="addForm()"
-        />
-        <q-btn
-          size="sm"
-          icon="note"
-          color="black"
-          title="Listar uma receita"
-          @click="addForm()"
-          style="margin-left: 10px"
-        />
-        <q-btn
-          size="sm"
-          icon="send"
-          color="black"
-          title="Enviar para as lojas"
-          @click="addForm()"
-          style="margin-left: 10px"
-        />
       </div>
     </div>
     <div class="row flex justify-center">
-      <div
-        v-if="novo"
-        class="col-12"
-        style="border: solid 1px black; padding: 10px"
-      >
+      <div class="col-md-6 col-xs-12" style="padding: 10px">
         <div class="text-h6 flex justify-center">RECEITAS</div>
 
         <q-form
@@ -78,7 +48,10 @@
         </q-form>
       </div>
 
-      <div class="col-12" style="border: solid 1px black">
+      <div
+        class="col-md-6 col-xs-12"
+        style="padding: 10px; border: solid 1px black"
+      >
         <div
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
