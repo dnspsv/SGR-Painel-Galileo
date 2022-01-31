@@ -10,7 +10,6 @@
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
         <div class="text-h6 flex justify-center">RECEITAS</div>
-
         <q-form
           @submit="onSubmit"
           @reset="onReset"
@@ -35,9 +34,9 @@
             </template>
           </q-input>
 
-          <div class="col-md-2 col-sm-2 col-xs-2">
+          <div>
             <q-btn
-              title="Gravar as alterações"
+              title="Gravar uma receita"
               type="submit"
               color="black"
               class="float-left"
@@ -46,6 +45,109 @@
             />
           </div>
         </q-form>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <q-form
+            @submit="onSubmit"
+            @reset="onReset"
+            class="row q-col-gutter-md"
+            ref="formReceita"
+          >
+            <q-input
+              outlined
+              clearable
+              type="text"
+              v-model="form.nm_receita"
+              label="Ingrediente"
+              class="col-md-6 col-sm-6 col-xs-6"
+              color="black"
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) || 'O ingrediente é obrigatório',
+              ]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="receipt" />
+              </template>
+            </q-input>
+
+            <q-input
+              outlined
+              clearable
+              type="text"
+              v-model="form.nm_receita"
+              label="QTDE"
+              class="col-md-4 col-sm-4 col-xs-4"
+              color="black"
+              :rules="[
+                (val) => (val && val.length > 0) || 'Aquantidade é obrigatória',
+              ]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="receipt" />
+              </template>
+            </q-input>
+
+            <div>
+              <q-btn
+                title="Gravar um Ingrediente"
+                type="submit"
+                color="black"
+                class="float-left"
+                icon="save"
+                style="height: 55px"
+              />
+            </div>
+          </q-form>
+        </div>
+
+        <div>
+          <q-form
+            @submit="onSubmit"
+            @reset="onReset"
+            class="row q-col-gutter-md"
+            ref="formReceita"
+          >
+            <q-select
+              class="col-md-3 col-sm-3 col-xs-3 flex"
+              name="ordem_etapa"
+              id="ordem_etapa"
+              outlined
+              v-model="model"
+              :options="niveis"
+              label="Ordem"
+              :rules="[(val) => val || 'Selecione uma ordem de preparo']"
+            />
+
+            <q-input
+              outlined
+              clearable
+              type="text"
+              v-model="form.nm_receita"
+              label="Modo de preparo"
+              class="col-md-7 col-sm-7 col-xs-7"
+              color="black"
+              :rules="[
+                (val) => (val && val.length > 0) || 'Atapa é obrigatória',
+              ]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="receipt" />
+              </template>
+            </q-input>
+
+            <div>
+              <q-btn
+                title="Gravar uma Etapa"
+                type="submit"
+                color="black"
+                class="float-left"
+                icon="save"
+                style="height: 55px"
+              />
+            </div>
+          </q-form>
+        </div>
       </div>
 
       <div
@@ -100,6 +202,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "PageReceitas",
@@ -110,6 +213,8 @@ export default defineComponent({
       nivelUsuario: "",
       novo: false,
       dados: [],
+      niveis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      model: ref(1),
       form: {
         nm_receita: "",
       },
