@@ -9,7 +9,6 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-          
         />
 
         <q-toolbar-title @click="$router.push({ name: 'home' })">
@@ -26,9 +25,7 @@
         style="padding: 20px; border-bottom: 1px solid #ccc"
       >
         <div class="col-xs-3 col-sm-3 text-caption">
-          <q-avatar text-color="white" color="black">{{
-            inicial
-          }}</q-avatar>
+          <q-avatar text-color="white" color="black">{{ inicial }}</q-avatar>
         </div>
         <div class="col-xs-8 col-sm-9 text-caption" text-color="white">
           {{ nivel > 0 ? "Administrador: " : "Loja: " }}
@@ -98,8 +95,7 @@ const linksList = [
     icon: "exit_to_app",
     link: "/",
     funcaoMenu: (msg) => {
-      localStorage.removeItem("nome");
-      localStorage.removeItem("nivel");
+      localStorage.removeItem("usuario");
     },
   },
 ];
@@ -108,22 +104,24 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "MainLayout",
-   data(){
-    return{
-      nome : "",
-      inicial:"", 
-      nivel:""
-    }
+  data() {
+    return {
+      nome: "",
+      inicial: "",
+      nivel: "",
+    };
   },
 
   components: {
     EssentialLink,
   },
- 
-  mounted(){
-    this.nome = localStorage.nome;
-    this.inicial = localStorage.nome[0]; 
-    this.nivel = localStorage.nivel;
+
+  mounted() {
+    
+      this.nome = JSON.parse(localStorage.usuario).nm_usuario;
+      this.inicial = JSON.parse(localStorage.usuario).nm_usuario[0];
+      this.nivel = JSON.parse(localStorage.usuario).nivel_usuario;
+   
   },
 
   setup() {

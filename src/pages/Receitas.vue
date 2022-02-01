@@ -1,58 +1,66 @@
 <template>
   <q-page class="content">
-    <!--    <div class="row flex bg-grey-4" style="padding: 10px">
-      <div class="col-xs-12 col-sm-6 text-left text-caption">
-        {{ nivelUsuario > 0 ? "Administrador: " : "Loja: " }}
-        <br />
-        {{ nomeUsuario }}
-      </div>
-    </div> -->
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
-        <div class="text-h6 flex justify-center">RECEITAS</div>
-        <q-form
-          @submit="onSubmitReceita"
-          @reset="onResetReceita"
-          class="row q-col-gutter-md"
-          ref="formReceita"
-        >
-          <input type="hidden" v-model="form.uuid_receita" />
-          <q-input
-            outlined
-            clearable
-            type="text"
-            v-model="form.nm_receita"
-            label="Nome da Receita"
-            class="col-md-10 col-sm-10 col-xs-10"
-            color="black"
-            :rules="[
-              (val) =>
-                (val && val.length > 0) || 'O nome da receita obrigatório',
-            ]"
-          >
-            <template v-slot:prepend>
-              <q-icon name="receipt" />
-            </template>
-          </q-input>
-
-          <div>
+        <div class="row text-h6" style="padding: 5px">
+          <div class="col">RECEITAS</div>
+          <div class="justify-right">
             <q-btn
-              title="Gravar uma receita"
-              type="submit"
+              label="Novo"
+              title="Nova Receita"
               color="black"
-              class="float-left"
-              icon="save"
-              style="height: 55px"
+              icon="note_add"
+              @click="onResetReceita()"
             />
           </div>
-        </q-form>
+        </div>
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div style="padding: 10px; ">
           <q-form
-            @submit="onSubmit"
-            @reset="onReset"
+            @submit="onSubmitReceita"
+            @reset="onResetReceita"
             class="row q-col-gutter-md"
             ref="formReceita"
+          >
+            <input type="hidden" v-model="form.uuid_receita" />
+            <q-input
+              outlined
+              clearable
+              type="text"
+              v-model="form.nm_receita"
+              label="Nome da Receita"
+              class="col-md-10 col-sm-10 col-xs-12"
+              color="black"
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) || 'O nome da receita é obrigatório',
+              ]"
+              style="margin-bottom: -10px"
+            >
+              <template v-slot:prepend>
+                <q-icon name="receipt" />
+              </template>
+            </q-input>
+
+            <div class="col-md-2 col-sm-2 col-xs-12">
+              <q-btn
+                title="Gravar uma receita"
+                type="submit"
+                color="black"
+                class=""
+                icon="save"
+                style="width: 100%; height: 55px"
+              />
+            </div>
+          </q-form>
+        </div>
+
+        <div style="padding: 10px; " v-if="novo">
+          <q-form
+            @submit="onSubmitReceitaIngrediente"
+            @reset="onResetReceitaIngrediente"
+            class="row q-col-gutter-md"
+            ref="formReceitaIngrediente"
           >
             <q-input
               outlined
@@ -60,7 +68,7 @@
               type="text"
               v-model="form.nm_ingrediente"
               label="Ingrediente"
-              class="col-md-6 col-sm-6 col-xs-6"
+              class="col-md-6 col-sm-6 col-xs-12"
               color="black"
               :rules="[
                 (val) =>
@@ -68,7 +76,7 @@
               ]"
             >
               <template v-slot:prepend>
-                <q-icon name="receipt" />
+                <q-icon name="view_array" />
               </template>
             </q-input>
 
@@ -78,31 +86,31 @@
               type="text"
               v-model="form.qtde_ingrediente"
               label="QTDE"
-              class="col-md-4 col-sm-4 col-xs-4"
+              class="col-md-4 col-sm-4 col-xs-12"
               color="black"
               :rules="[
                 (val) => (val && val.length > 0) || 'Aquantidade é obrigatória',
               ]"
             >
               <template v-slot:prepend>
-                <q-icon name="receipt" />
+                <q-icon name="library_books" />
               </template>
             </q-input>
 
-            <div>
+            <div class="col-md-2 col-sm-2 col-xs-12">
               <q-btn
                 title="Gravar um Ingrediente"
                 type="submit"
                 color="black"
                 class="float-left"
                 icon="save"
-                style="height: 55px"
+                style="width: 100%; height: 55px"
               />
             </div>
           </q-form>
         </div>
 
-        <div>
+        <div style="padding: 10px; " v-if="novo">
           <q-form
             @submit="onSubmit"
             @reset="onReset"
@@ -110,7 +118,7 @@
             ref="formReceita"
           >
             <q-select
-              class="col-md-3 col-sm-3 col-xs-3 flex"
+              class="col-md-3 col-sm-3 col-xs-12 flex"
               name="ordem_etapa"
               id="ordem_etapa"
               outlined
@@ -126,25 +134,25 @@
               type="text"
               v-model="form.nm_modo"
               label="Modo de preparo"
-              class="col-md-7 col-sm-7 col-xs-7"
+              class="col-md-7 col-sm-7 col-xs-12"
               color="black"
               :rules="[
                 (val) => (val && val.length > 0) || 'Atapa é obrigatória',
               ]"
             >
               <template v-slot:prepend>
-                <q-icon name="receipt" />
+                <q-icon name="mode_edit" />
               </template>
             </q-input>
 
-            <div>
+            <div class="col-md-2 col-sm-2 col-xs-12">
               <q-btn
                 title="Gravar uma Etapa"
                 type="submit"
                 color="black"
                 class="float-left"
                 icon="save"
-                style="height: 55px"
+                style="width: 100%; height: 55px"
               />
             </div>
           </q-form>
@@ -153,7 +161,12 @@
 
       <div
         class="col-md-6 col-xs-12"
-        style="padding: 10px; border: solid 1px black"
+        style="
+          padding: 10px;
+          border: solid 1px black;
+          overflow-y: scroll;
+          height: 600px;
+        "
       >
         <div
           class="q-pa-md row items_start q-gutter-md flex flex-center"
@@ -210,8 +223,7 @@ export default defineComponent({
   data() {
     return {
       pesquisa: "",
-      nomeUsuario: "",
-      nivelUsuario: "",
+      usuario: "",
       novo: false,
       dados: [],
       niveis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -228,15 +240,6 @@ export default defineComponent({
   created() {},
 
   mounted() {
-    this.nomeUsuario = localStorage.nome;
-    this.nivelUsuario = localStorage.nivel;
-
-    if (!this.nomeUsuario) {
-      alert("Login incorreto");
-      this.$router.replace({ name: "login" });
-      return;
-    }
-
     this.listagem();
   },
 
@@ -257,18 +260,25 @@ export default defineComponent({
         );
     },
     onSubmitReceita() {
+      if (this.form.uuid_receita === "") {
+        this.incluirReceita();
+      } else {
+        this.alterarReceita();
+      }
+
       this.$q.notify({
         message: "cadastrado com sucesso",
         color: "positive",
         icon: "check_circle_outline",
       });
-      this.onReset();
+      this.onResetReceita();
     },
-    async onReset() {
+    async onResetReceita() {
       await this.resetForm();
-      this.$refs.formIngrediente.resetValidation();
+      this.$refs.formReceita.resetValidation();
     },
     async resetForm() {
+      this.novo = false;
       this.form = {
         uuid_receita: "",
         nm_receita: "",
@@ -280,6 +290,38 @@ export default defineComponent({
     editar(dados) {
       this.form.uuid_receita = dados.uuid_receita;
       this.form.nm_receita = dados.nm_receita;
+      this.novo = true;
+    },
+    incluirReceita() {
+      const dadosParaEnvio = {
+        nm_receita: this.form.nm_receita,
+        uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
+        status_receita: true,
+      };
+
+      console.log(dadosParaEnvio);
+      this.$api
+        .post("/receitas", dadosParaEnvio)
+        .then((response) => {
+          console.log(response);
+          this.listagem();
+        })
+        .catch((error) => console.log(error));
+    },
+    alterarReceita() {
+      const dadosParaEnvio = {
+        nm_receita: this.form.nm_receita,
+        uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
+        status_receita: true,
+      };
+
+      console.log(dadosParaEnvio);
+      this.$api
+        .put("/receitas/" + this.form.uuid_receita, dadosParaEnvio)
+        .then((response) => {
+          this.listagem();
+        })
+        .catch((error) => console.log(error));
     },
   },
 });
