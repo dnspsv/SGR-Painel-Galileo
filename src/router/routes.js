@@ -3,8 +3,11 @@ const routes = [
     path: "/",
     component: () => import("layouts/LoginLayout.vue"),
     beforeEnter: (to, from, next) => {
-      if (localStorage.usuario) next({ name: "home" });
-      else next();
+      if (localStorage.usuario) {
+        next({ name: "home" });
+      } else {
+        next();
+      }
     },
     children: [
       { path: "", name: "login", component: () => import("pages/login.vue") },
@@ -14,8 +17,11 @@ const routes = [
     path: "/autorizado",
     component: () => import("layouts/MainLayout.vue"),
     beforeEnter: (to, from, next) => {
-      if (!localStorage.usuario) next({ name: "login" });
-      else next();
+      if (!localStorage.usuario) {
+        next({ name: "login" });
+      } else {
+        next();
+      }
     },
     children: [
       { path: "", name: "home", component: () => import("pages/Receitas.vue") },

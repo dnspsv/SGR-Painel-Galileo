@@ -87,7 +87,9 @@ const linksList = [
     caption: "Usuários do sistema",
     icon: "person",
     link: "autorizado/usuarios",
-    funcaoMenu: (msg) => {},
+    funcaoMenu: (msg) => {
+      
+    },
   },
   {
     title: "Sair",
@@ -117,11 +119,9 @@ export default defineComponent({
   },
 
   mounted() {
-    
-      this.nome = JSON.parse(localStorage.usuario).nm_usuario;
-      this.inicial = JSON.parse(localStorage.usuario).nm_usuario[0];
-      this.nivel = JSON.parse(localStorage.usuario).nivel_usuario;
-   
+    this.nome = JSON.parse(localStorage.usuario).nm_usuario;
+    this.inicial = JSON.parse(localStorage.usuario).nm_usuario[0];
+    this.nivel = JSON.parse(localStorage.usuario).nivel_usuario;
   },
 
   setup() {
