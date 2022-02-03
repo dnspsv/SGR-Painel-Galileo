@@ -22,7 +22,6 @@
                   icon="note_add"
                   @click="onResetReceita()"
                 />
-                
               </div>
             </div>
 
@@ -69,29 +68,28 @@
           </q-tab-panel>
           <q-tab-panel name="ingredientes">
             <div style="padding: 10px" v-if="novo">
+              <p>{{ this.form.nm_receita }}</p>
               <q-form
-                @submit="onSubmitReceitaIngrediente"
-                @reset="onResetReceitaIngrediente"
+                @submit="onSubmitRIngrediente"
+                @reset="onResetRIngrediente"
                 class="row q-col-gutter-md"
                 ref="formReceitaIngrediente"
               >
-                <q-input
+                <q-select
                   outlined
-                  clearable
-                  type="text"
-                  v-model="form.nm_ingrediente"
+                  v-model="modelIngrediente"
+                  :options="ingredientes"
                   label="Ingrediente"
-                  class="col-md-6 col-sm-6 col-xs-12"
-                  color="black"
-                  :rules="[
-                    (val) =>
-                      (val && val.length > 0) || 'O ingrediente é obrigatório',
-                  ]"
+                  style="width: 100%"
                 >
-                  <template v-slot:prepend>
-                    <q-icon name="view_array" />
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Nenhum resultado encontrado
+                      </q-item-section>
+                    </q-item>
                   </template>
-                </q-input>
+                </q-select>
 
                 <q-input
                   outlined
@@ -103,7 +101,7 @@
                   color="black"
                   :rules="[
                     (val) =>
-                      (val && val.length > 0) || 'Aquantidade é obrigatória',
+                      (val && val.length > 0) || 'A quantidade é obrigatória',
                   ]"
                 >
                   <template v-slot:prepend>
@@ -122,6 +120,36 @@
                   />
                 </div>
               </q-form>
+              <br /> 
+             
+              <q-markup-table>
+                <thead class="bg-black text-white">
+                  <tr>
+                    <th class="text-left">Ingrediente</th>
+                    <th class="text-right">Quantidade</th>
+                    <th class="text-right">Editar</th>
+                  </tr>
+                </thead>
+                <tbody
+                  v-for="info in ingredienteReceita"
+                  :key="info.uuid_ireceita"
+                  style="width: 100%"
+                >
+                  <tr>
+                    <td class="text-left">{{ info.tb_ingrediente.nm_ingrediente}}</td>
+                    <td class="text-right">{{info.qtde_ingrediente}}</td>
+                    <td class="text-right">
+                      <q-btn
+                        size="xs"
+                        round
+                        icon="edit"
+                        color="black"
+                        title="Editar uma receita"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
             </div>
           </q-tab-panel>
           <q-tab-panel name="preparo">
@@ -245,7 +273,10 @@ export default defineComponent({
       novo: false,
       dados: [],
       niveis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      ingredientes: [],
+      ingredienteReceita: [],
       model: ref(1),
+      modelIngrediente: ref(null),
       form: {
         uuid_receita: "",
         nm_receita: "",
@@ -255,7 +286,10 @@ export default defineComponent({
       },
     };
   },
-  created() {},
+
+  created() {
+    this.listagemIngredientes();
+  },
 
   mounted() {
     this.listagem();
@@ -273,6 +307,39 @@ export default defineComponent({
         .then(
           (res) => {
             res.data.idErro ? (this.dados = []) : (this.dados = res.data);
+          },
+          (err) => console.log(err)
+        );
+    },
+    listagemIngredientes() {
+      this.$api
+        .get("/ingredientes", {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then(
+          (res) => {
+            for (var i = 0; i < res.data.length; i++) {
+              var obj = {
+                label: "",
+                value: "",
+              };
+              obj.label = res.data[i].nm_ingrediente;
+              obj.value = res.data[i].uuid_ingrediente;
+
+              this.ingredientes.push(obj);
+            }
+          },
+          (err) => console.log(err)
+        );
+    },
+    async listagemRIngrediente(id) {
+      await this.$api
+        .get("/ingredientesReceitas/" + id, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then(
+          (res) => {
+            res.data.idErro ? (this.ingredienteReceita = [])  : (this.ingredienteReceita = res.data);
           },
           (err) => console.log(err)
         );
@@ -297,6 +364,8 @@ export default defineComponent({
     },
     async resetForm() {
       this.novo = false;
+      this.modelIngrediente = ref(null);
+      this.form.qtde_ingrediente = "";
       this.form = {
         uuid_receita: "",
         nm_receita: "",
@@ -305,10 +374,13 @@ export default defineComponent({
         nm_modo: "",
       };
     },
-    editar(dados) {
+    async editar(dados) {
+      await this.listagemRIngrediente(dados.uuid_receita);
       this.form.uuid_receita = dados.uuid_receita;
       this.form.nm_receita = dados.nm_receita;
       this.novo = true;
+
+      console.log(this.ingredienteReceita);
     },
     incluirReceita() {
       const dadosParaEnvio = {
@@ -340,6 +412,35 @@ export default defineComponent({
           this.listagem();
         })
         .catch((error) => console.log(error));
+    },
+    onSubmitRIngrediente() {
+      this.incluirRIngrediente();
+    },
+    incluirRIngrediente() {
+      const dadosEnvio = {
+        qtde_ingrediente: this.form.qtde_ingrediente,
+        status_ingrediente: "true",
+        ordem_ingrediente: 1,
+        uuid_receita: this.form.uuid_receita,
+        uuid_ingrediente: this.modelIngrediente.value,
+      };
+
+      this.$api
+        .post("/ingredientesReceitas", dadosEnvio)
+        .then((response) => {
+          console.log(response);
+          this.listagem();
+          this.onResetRIngrediente();
+        })
+        .catch((error) => console.log(error));
+    },
+    async onResetRIngrediente() {
+      await this.resetFormIngrediente();
+      this.$refs.formReceitaIngrediente.resetValidation();
+    },
+    async resetFormIngrediente() {
+      this.modelIngrediente = ref(null);
+      this.form.qtde_ingrediente = "";
     },
   },
 });

@@ -129,8 +129,8 @@ export default defineComponent({
   },
   methods: {
     listagem() {
-      axios
-        .get("http://localhost:3030/lojas", {
+      this.$api
+        .get("/lojas", {
           headers: { "Content-Type": "application/json" },
         })
         .then(

@@ -58,7 +58,11 @@
             ]"
           />
           <div class="q-pb-lg">
-            <q-toggle color="black" v-model="dense" label="Ativar Ingrediente" />
+            <q-toggle
+              color="black"
+              v-model="dense"
+              label="Ativar Ingrediente"
+            />
           </div>
 
           <div class="col-12">
@@ -99,13 +103,13 @@
               <q-icon name="search" color="black" />
             </template>
           </q-input>
-          
+
           <div
             v-for="info in comFiltro"
             :key="info.uuid_ingrediente"
             style="width: 100%"
           >
-            <q-card class="my-card  bg-grey-2" bordered >
+            <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_ingrediente" />
@@ -123,7 +127,6 @@
                   title="Editar um ingrediente"
                   @click="editar(info)"
                 />
-               
               </q-card-actions>
             </q-card>
           </div>
@@ -189,9 +192,11 @@ export default defineComponent({
   methods: {
     async onSubmit(evt) {
       const formData = new FormData(evt.target);
+
       const data = [];
 
       for (const [name, value] of formData.entries()) {
+ 
         data.push({
           name,
           value,
@@ -279,4 +284,3 @@ export default defineComponent({
   },
 });
 </script>
- 
