@@ -15,7 +15,7 @@
           SGR Galileo
         </q-toolbar-title>
 
-        <!--<div>v{{ $q.version }}</div>-->
+        
       </q-toolbar>
     </q-header>
 
@@ -32,6 +32,7 @@
           <br />
           {{ nome }}
         </div>
+        
       </div>
 
       <q-list>
@@ -42,6 +43,15 @@
           @click="link.funcaoMenu()"
         />
       </q-list>
+      <br/>
+      <div class="flex justify-center text-red text-caption">
+        Sistema em Desenvolvimento
+        <br/>
+        Os dados inclusos poderão ser perdidos
+      </div>
+      <br/>
+      <q-separator/>
+      <div class="flex justify-center text-black text-h6">versão {{ $q.version }}</div>
     </q-drawer>
 
     <q-page-container>
