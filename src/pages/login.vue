@@ -71,10 +71,14 @@
 
 <script>
 import { defineComponent } from "vue";
+
 export default defineComponent({
   name: "Login",
+  
   data() {
+    
     return {
+        
       login: {
         email: "",
         senha: "",
@@ -89,18 +93,27 @@ export default defineComponent({
       localStorage.usuario = JSON.stringify(dados); //save lerr==== // JSON.parse(dados);
     },
     async iniciarSessao() {
-          
       const dadosParaEnvio = {
         email_usuario: this.login.email,
         senha_usuario: this.login.senha,
       };
-     
+
       await this.$api
         .post("/usuarios/LoginUsuario", dadosParaEnvio)
         .then((response) => {
+          console.log(response);
           this.armazenarUsuario(response.data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          this.$q.notify({
+            message: "Email ou senha inválida",
+            color: "negative",
+            icon: "check_circle_outline",
+            position: "top",
+          });
+         
+        });
 
       this.$router.push({ name: "home" });
     },

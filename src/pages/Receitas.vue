@@ -189,7 +189,7 @@
               </q-form>
               <br />
 
-              <q-markup-table>
+              <q-markup-table v-if="ingredienteReceita">
                 <thead class="bg-black text-white">
                   <tr>
                     <th class="text-left">Passo</th>
@@ -244,14 +244,14 @@
                 @submit="onSubmitPrepado"
                 @reset="onResetPreparo"
                 class="row q-col-gutter-md"
-                ref="formReceita"
+                ref="formPreparoReceita"
               >
                 <q-select
                   class="col-md-3 col-sm-3 col-xs-12 flex"
                   name="ordem_etapa"
                   id="ordem_etapa"
                   outlined
-                  v-model="formPreparo.model"
+                  v-model="formPreparo.modelPreparo"
                   :options="formPreparo.niveis"
                   label="Ordem"
                   :rules="[(val) => val || 'Selecione uma ordem de preparo']"
@@ -279,10 +279,45 @@
                     color="black"
                     class="float-left"
                     icon="save"
-                    style="width: 100%; height: 55px"
+                    style="width: 100%; height: 55px; margin-bottom:10px;"
                   />
                 </div>
               </q-form>
+
+              <q-markup-table v-if="preparoReceita">
+                <thead class="bg-black text-white">
+                  <tr>
+                    <th class="text-left">Ordem de preparo</th>
+                    <th class="text-left">Modo de preparar</th>
+                    <th class="text-right">Excluir</th>
+                  </tr>
+                </thead>
+                <tbody
+                  v-for="info in preparoReceita"
+                  :key="info.uuid_preparo"
+                  style="width: 100%"
+                >
+                  <tr>
+                    <td class="text-left">
+                      {{ info.ordem_Receita }}
+                    </td>
+                    <td class="text-left">
+                      {{ info.preparo_Receita }}
+                    </td>
+
+                    <td class="text-right">
+                      <q-btn
+                        size="xs"
+                        round
+                        icon="close"
+                        color="black"
+                        title="Excluir"
+                        @click="excluirPreparoReceita(info.uuid_preparo)"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
             </div>
           </q-tab-panel>
         </q-tab-panels>
@@ -323,7 +358,9 @@
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <div class="text-h6">{{ info.nm_receita }}</div>
-                  <div class="text-subtitle2">{{ info.nm_receita }}</div>
+                  <div class="text-subtitle2">
+                    Prioridade: {{ info.prioridade_receita }}
+                  </div>
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -359,6 +396,7 @@ export default defineComponent({
 
       ingredientes: [],
       ingredienteReceita: [],
+      preparoReceita: [],
 
       modelIngrediente: ref(null),
 
@@ -377,8 +415,19 @@ export default defineComponent({
         fixa: false,
       },
       formPreparo: {
-        niveis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        model: ref(1),
+        niveis: [
+          { label: 1, value: 1 },
+          { label: 2, value: 2 },
+          { label: 3, value: 3 },
+          { label: 4, value: 4 },
+          { label: 5, value: 5 },
+          { label: 6, value: 6 },
+          { label: 7, value: 7 },
+          { label: 8, value: 8 },
+          { label: 9, value: 9 },
+          { label: 10, value: 10 },
+        ],
+        modelPreparo: ref(null),
         nm_modo: "",
       },
     };
@@ -430,19 +479,20 @@ export default defineComponent({
         );
     },
     async listagemRIngrediente(id) {
+      this.ingredienteReceita = [];
+
       await this.$api
         .get("/ingredientesReceitas/" + id, {
           headers: { "Content-Type": "application/json" },
         })
-        .then(
-          (res) => {
-            res.data.idErro
-              ? (this.ingredienteReceita = [])
-              : (this.ingredienteReceita = res.data);
-            console.log(this.ingredienteReceita);
-          },
-          (err) => console.log(err)
-        );
+        .then((res) => {
+          res.data.idErro
+            ? (this.ingredienteReceita = [])
+            : (this.ingredienteReceita = res.data);
+        })
+        .catch((err) => {
+          this.ingredienteReceita = false;
+        });
     },
     onSubmitReceita() {
       if (this.form.uuid_receita === "") {
@@ -482,6 +532,7 @@ export default defineComponent({
     },
     async editar(dados) {
       await this.listagemRIngrediente(dados.uuid_receita);
+      await this.listagemPreparo(dados.uuid_receita);
       this.form.uuid_receita = dados.uuid_receita;
       this.form.nm_receita = dados.nm_receita;
       this.novo = true;
@@ -492,6 +543,7 @@ export default defineComponent({
       const dadosParaEnvio = {
         nm_receita: this.form.nm_receita,
         uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
+        prioridade_receita: this.form.prioridade,
         status_receita: true,
       };
 
@@ -499,7 +551,7 @@ export default defineComponent({
       this.$api
         .post("/receitas", dadosParaEnvio)
         .then((response) => {
-          console.log(response);
+          //console.log(response);
           this.listagem();
         })
         .catch((error) => console.log(error));
@@ -563,24 +615,70 @@ export default defineComponent({
           .catch((error) => console.log(error));
       }
     },
-    onSubmitPrepado() {
+    async onSubmitPrepado() {
       const dadosParaEnviar = {
         uuid_receita: this.form.uuid_receita,
         preparo_Receita: this.formPreparo.nm_modo,
-        ordem_Receita: 1
+        ordem_Receita: this.formPreparo.modelPreparo.value,
       };
       console.log(dadosParaEnviar);
       this.$api
         .post("/preparoReceitas", dadosParaEnviar)
         .then((response) => {
-          console.log(response);
-          this.listagem();
+          this.listagemPreparo(this.form.uuid_receita);
         })
         .catch((error) => console.log(error));
+      await this.onResetPreparo();
     },
-    onResetPreparo() {},
-    listagemPreparo(){
+    async onResetPreparo() {
+      await this.resetFormPreparo();
+      this.$refs.formPreparoReceita.resetValidation();
+    },
+    async resetFormPreparo() {
+      this.formPreparo = {
+        niveis: [
+          { label: 1, value: 1 },
+          { label: 2, value: 2 },
+          { label: 3, value: 3 },
+          { label: 4, value: 4 },
+          { label: 5, value: 5 },
+          { label: 6, value: 6 },
+          { label: 7, value: 7 },
+          { label: 8, value: 8 },
+          { label: 9, value: 9 },
+          { label: 10, value: 10 },
+        ],
+        model: ref(1),
+        nm_modo: "",
+      };
+      
+    },
 
+    async listagemPreparo(id) {
+      this.preparoReceita = [];
+      await this.$api
+        .get("/preparoReceitas/" + id, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          res.data.idErro
+            ? (this.preparoReceita = [])
+            : (this.preparoReceita = res.data);
+          //console.log(this.preparoReceita);
+        })
+        .catch((err) => (this.preparoReceita = false));
+    },
+    excluirPreparoReceita(id) {
+      const confirmado = confirm("Deseja realmente excluir o modo de preparo?");
+      if (confirmado) {
+        this.$api
+          .delete("/preparoReceitas/" + id, { data: id })
+          .then((response) => {
+            this.listagemPreparo(this.form.uuid_receita);
+            //this.onResetRIngrediente();
+          })
+          .catch((error) => console.log(error));
+      }
     },
   },
 });
