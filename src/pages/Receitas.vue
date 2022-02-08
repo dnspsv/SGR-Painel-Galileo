@@ -13,7 +13,7 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="receitas">
             <div class="row text-h6" style="padding: 5px">
-              <div class="col">RECEITAS</div>
+              <div class="col"><TituloPagina titulo="RECEITAS" /></div>
               <div class="justify-right">
                 <q-btn
                   label="Nova"
@@ -279,7 +279,7 @@
                     color="black"
                     class="float-left"
                     icon="save"
-                    style="width: 100%; height: 55px; margin-bottom:10px;"
+                    style="width: 100%; height: 55px; margin-bottom: 10px"
                   />
                 </div>
               </q-form>
@@ -336,21 +336,14 @@
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
         >
-          <q-input
-            style="width: 100%"
-            color="with"
-            label-color="black"
-            outlined
+          <PesquisarRegistro
+            labelPesquisa="Pesquisar Receitas"
             v-model="pesquisa"
-            label="Pesquisar Receitas"
             @input="pesquisa = $event.target.value"
-          >
-            <template v-slot:append>
-              <q-icon name="search" color="black" />
-            </template>
-          </q-input>
+          />
+
           <div
-            v-for="info in dados"
+            v-for="info in comFiltro"
             :key="info.uuid_receita"
             style="width: 100%"
           >
@@ -384,6 +377,8 @@
 <script>
 import { ref } from "vue";
 import { defineComponent } from "vue";
+import TituloPagina from "components/TituloPagina.vue";
+import PesquisarRegistro from "components/PesquisarRegistro.vue";
 export default defineComponent({
   name: "PageReceitas",
   data() {
@@ -432,6 +427,10 @@ export default defineComponent({
       },
     };
   },
+  components: {
+    TituloPagina,
+    PesquisarRegistro,
+  },
 
   created() {
     this.listagemIngredientes();
@@ -440,7 +439,16 @@ export default defineComponent({
   mounted() {
     this.listagem();
   },
-
+  computed: {
+    comFiltro() {
+      if (this.pesquisa) {
+        let exp = new RegExp(this.pesquisa.trim(), "i");
+        return this.dados.filter((dado) => exp.test(dado.nm_receita));
+      } else {
+        return this.dados;
+      }
+    },
+  },
   methods: {
     addForm() {
       !this.novo ? (this.novo = true) : (this.novo = false);
@@ -575,9 +583,11 @@ export default defineComponent({
       this.incluirRIngrediente();
     },
     incluirRIngrediente() {
+      alert(this.formIngredienteReceita.fixa);
       const dadosEnvio = {
         qtde_ingrediente: this.formIngredienteReceita.qtde_ingrediente,
         status_ingrediente: "true",
+        qtde_fixa: this.formIngredienteReceita.fixa,
         ordem_ingrediente: this.formIngredienteReceita.passo,
         uuid_receita: this.form.uuid_receita,
         uuid_ingrediente: this.modelIngrediente.value, //pega o valor do select
@@ -651,7 +661,6 @@ export default defineComponent({
         model: ref(1),
         nm_modo: "",
       };
-      
     },
 
     async listagemPreparo(id) {

@@ -2,9 +2,8 @@
   <q-page class="content">
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
-        <div class="flex justify-center">
-          <p class="text-h4">Unidades</p>
-        </div>
+        <TituloPagina titulo="UNIDADES" />
+
         <q-form
           @submit="onSubmit"
           @reset="onReset"
@@ -56,8 +55,13 @@
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
         >
+          <PesquisarRegistro
+            labelPesquisa="Pesquisar Unidades"
+            v-model="pesquisa"
+            @input="pesquisa = $event.target.value"
+          />
           <div
-            v-for="info in dados"
+            v-for="info in comFiltro"
             :key="info.uuid_unidade"
             style="width: 100%"
           >
@@ -87,18 +91,37 @@
 </template>
 
 <script>
-import axios from "axios";
+
 import { defineComponent } from "vue";
+import TituloPagina from "components/TituloPagina.vue";
+import PesquisarRegistro from "components/PesquisarRegistro.vue";
+
 export default defineComponent({
   name: "PageUnidade",
   data() {
     return {
+      pesquisa:"",
       dados: [],
       form: {
         sigla_unidade: "",
         uuid_unidade: "",
       },
     };
+  },
+  
+  components:{
+    TituloPagina,
+    PesquisarRegistro
+  },
+  computed: {
+    comFiltro() {
+      if (this.pesquisa) {
+        let exp = new RegExp(this.pesquisa.trim(), "i");
+        return this.dados.filter((dado) => exp.test(dado.sigla_unidade));
+      } else {
+        return this.dados;
+      }
+    },
   },
   created() {
     this.listagem();

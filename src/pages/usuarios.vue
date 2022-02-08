@@ -2,9 +2,8 @@
   <q-page class="content">
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
-        <div class="flex justify-center">
-          <p class="text-h4">Usuários</p>
-        </div>
+        <TituloPagina titulo="USUÁRIOS" />
+
         <q-form
           @submit="onSubmit"
           @reset="onReset"
@@ -124,16 +123,38 @@
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
         >
-          <div v-for="info in dados" :key="info.uuid_loja" style="width: 100%">
-            <q-card class="my-card bg-grey-2" bordered >
+          <PesquisarRegistro
+            labelPesquisa="Pesquisar Usuários"
+            v-model="pesquisa"
+            @input="pesquisa = $event.target.value"
+          />
+
+          <div
+            v-for="info in comFiltro"
+            :key="info.uuid_usuario"
+            style="width: 100%"
+          >
+            <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_usuario" />
                   <div class="text-subtitle2">Nome: {{ info.nm_usuario }}</div>
-                  <div class="text-subtitle2">Email: {{ info.email_usuario }}</div>
-                  <div class="text-subtitle2">Fone: {{ info.fone_usuario }}</div>
-                  <div class="text-subtitle2">Nível: {{ info.nivel_usuario > 1 ? 'Administrador' : 'Loja' }}</div>
-                  <div class="text-subtitle2">Estado: {{ info.status_usuario===true ? 'Ativado' : 'Desativado' }}</div>
+                  <div class="text-subtitle2">
+                    Email: {{ info.email_usuario }}
+                  </div>
+                  <div class="text-subtitle2">
+                    Fone: {{ info.fone_usuario }}
+                  </div>
+                  <div class="text-subtitle2">
+                    Nível:
+                    {{ info.nivel_usuario > 0 ? "Administrador" : "Loja" }}
+                  </div>
+                  <div class="text-subtitle2">
+                    Estado:
+                    {{
+                      info.status_usuario === true ? "Ativado" : "Desativado"
+                    }}
+                  </div>
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -157,24 +178,28 @@
 <script>
 import { ref } from "vue";
 import { defineComponent } from "vue";
+import TituloPagina from "components/TituloPagina.vue";
+import PesquisarRegistro from "components/PesquisarRegistro.vue";
+
 export default defineComponent({
   name: "PageLoja",
   data() {
     return {
+      pesquisa: "",
       dense: ref(true),
       model: ref(null),
       dados: [],
       niveis: [
         {
-          label: "Administrador",
-          value: 2,
+          label: "Loja",
+          value: 0,
         },
         {
-          label: "Loja",
+          label: "Administrador",
           value: 1,
-        },     
-        
+        },
       ],
+
       form: {
         uuid_usuario: "",
         nm_usuario: "",
@@ -182,12 +207,26 @@ export default defineComponent({
         senha_usuario: "",
         telefone: "",
         nivel_usuario: "",
-        status_usuario: ""
+        status_usuario: "",
       },
     };
   },
+  components: {
+    TituloPagina,
+    PesquisarRegistro,
+  },
   created() {
     this.listagem();
+  },
+  computed: {
+    comFiltro() {
+      if (this.pesquisa) {
+        let exp = new RegExp(this.pesquisa.trim(), "i");
+        return this.dados.filter((dado) => exp.test(dado.nm_usuario));
+      } else {
+        return this.dados;
+      }
+    },
   },
   methods: {
     listagem() {
@@ -209,10 +248,9 @@ export default defineComponent({
       this.form.senha_usuario = dados.senha_usuario;
       this.form.status_usuario = dados.status_usuario;
       this.form.telefone = dados.fone_usuario;
-      this.form.nivel_usuario = dados.nivel_usuario;
+      this.model = this.niveis[dados.nivel_usuario];
     },
     async onSubmit(evt) {
-
       const formData = new FormData(evt.target);
       const data = [];
 
@@ -222,7 +260,6 @@ export default defineComponent({
           value,
         });
       }
-      
 
       const dadosEnvio = {
         nm_usuario: this.form.nm_usuario,
@@ -273,10 +310,7 @@ export default defineComponent({
     },
     alterarDados(dadosEnvio) {
       this.$api
-        .put(
-          "/usuarios/" + this.form.uuid_usuario,
-          dadosEnvio
-        )
+        .put("/usuarios/" + this.form.uuid_usuario, dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();

@@ -2,9 +2,8 @@
   <q-page class="content">
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
-        <div class="flex justify-center">
-          <p class="text-h4">INGREDIENTES</p>
-        </div>
+        <TituloPagina titulo="INGREDIENTES" />
+
         <q-form
           @submit="onSubmit"
           @reset="onReset"
@@ -90,19 +89,11 @@
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
         >
-          <q-input
-            style="width: 100%"
-            color="with"
-            label-color="black"
-            outlined
+          <PesquisarRegistro
+            labelPesquisa="Pesquisar Ingredientes"
             v-model="pesquisa"
-            label="Pesquisar Ingredientes"
             @input="pesquisa = $event.target.value"
-          >
-            <template v-slot:append>
-              <q-icon name="search" color="black" />
-            </template>
-          </q-input>
+          />
 
           <div
             v-for="info in comFiltro"
@@ -115,7 +106,6 @@
                   <input type="hidden" :value="info.uuid_ingrediente" />
                   <div class="text-h6">{{ info.nm_ingrediente }}</div>
                   <div class="text-subtitle2">{{ info.obs_ingrediente }}</div>
-                  <!-- <div class="text-subtitle2">Cadastrado em: {{ info.data_criacao }}</div> -->
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -139,6 +129,9 @@
 <script>
 import { ref } from "vue";
 import { defineComponent } from "vue";
+import TituloPagina from "components/TituloPagina.vue";
+import PesquisarRegistro from "components/PesquisarRegistro.vue";
+
 export default defineComponent({
   name: "PageIngrediente",
   data() {
@@ -154,6 +147,11 @@ export default defineComponent({
         uuid: "",
       },
     };
+  },
+
+  components: {
+    TituloPagina,
+    PesquisarRegistro,
   },
 
   computed: {
@@ -196,7 +194,6 @@ export default defineComponent({
       const data = [];
 
       for (const [name, value] of formData.entries()) {
- 
         data.push({
           name,
           value,
@@ -247,7 +244,10 @@ export default defineComponent({
       this.form.nome = info.nm_ingrediente;
       this.form.obs = info.obs_ingrediente;
       this.dense = ref(info.status_ingrediente);
-      //this.model = { name: info.tb_unidade.sigla_unidade, value: info.tb_unidade.uuid_unidade };
+      this.model = {
+        label: info.tb_unidade.sigla_unidade,
+        value: info.tb_unidade.uuid_unidade,
+      };
     },
     async listagem() {
       this.$api

@@ -2,9 +2,8 @@
   <q-page class="content">
     <div class="row flex justify-center">
       <div class="col-md-6 col-xs-12" style="padding: 10px">
-        <div class="flex justify-center">
-          <p class="text-h4">Lojas</p>
-        </div>
+        <TituloPagina titulo="Lojas" />
+
         <q-form
           @submit="onSubmit"
           @reset="onReset"
@@ -21,8 +20,7 @@
             color="black"
             :rules="[
               (val) =>
-                (val && val.length > 0) ||
-                'O nome da loja é obrigatório ',
+                (val && val.length > 0) || 'O nome da loja é obrigatório ',
             ]"
             style="text-transform: uppercase"
           >
@@ -41,8 +39,7 @@
             color="black"
             :rules="[
               (val) =>
-                (val && val.length > 0) ||
-                'O código da loja é obrigatório ',
+                (val && val.length > 0) || 'O código da loja é obrigatório ',
             ]"
             style="text-transform: uppercase"
           >
@@ -76,17 +73,23 @@
           class="q-pa-md row items_start q-gutter-md flex flex-center"
           style="max-heigth: 50px"
         >
+          <PesquisarRegistro
+            labelPesquisa="Pesquisar Lojas"
+            v-model="pesquisa"
+            @input="pesquisa = $event.target.value"
+          />
+          
           <div
-            v-for="info in dados"
+            v-for="info in comFiltro"
             :key="info.uuid_loja"
             style="width: 100%"
           >
-            <q-card class="my-card bg-grey-2" bordered >
+            <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
                   <input type="hidden" :value="info.uuid_loja" />
                   <div class="text-h6">Nome: {{ info.nm_loja }}</div>
-                
+
                   <div class="text-h6">código da loja: {{ info.cd_loja }}</div>
                 </div>
               </q-card-section>
@@ -99,7 +102,6 @@
                   title="Editar uma loja"
                   @click="editar(info)"
                 />
-             
               </q-card-actions>
             </q-card>
           </div>
@@ -112,10 +114,14 @@
 <script>
 import axios from "axios";
 import { defineComponent } from "vue";
+import TituloPagina from "components/TituloPagina.vue";
+import PesquisarRegistro from "components/PesquisarRegistro.vue";
+
 export default defineComponent({
   name: "PageLoja",
   data() {
     return {
+      pesquisa: "",
       dados: [],
       form: {
         nm_loja: "",
@@ -124,8 +130,23 @@ export default defineComponent({
       },
     };
   },
+  components: {
+    TituloPagina,
+    PesquisarRegistro,
+  },
   created() {
     this.listagem();
+  },
+
+  computed: {
+    comFiltro() {
+      if (this.pesquisa) {
+        let exp = new RegExp(this.pesquisa.trim(), "i");
+        return this.dados.filter((dado) => exp.test(dado.nm_loja));
+      } else {
+        return this.dados;
+      }
+    },
   },
   methods: {
     listagem() {
@@ -148,7 +169,7 @@ export default defineComponent({
     async onSubmit() {
       const dadosEnvio = {
         nm_loja: this.form.nm_loja,
-        cd_loja: this.form.cd_loja
+        cd_loja: this.form.cd_loja,
       };
 
       if (this.form.uuid_loja === "") {
@@ -173,7 +194,7 @@ export default defineComponent({
       this.form = {
         uuid_loja: "",
         nm_loja: "",
-        cd_loja: ""
+        cd_loja: "",
       };
     },
     gravarDados(dadosEnvio) {
@@ -187,10 +208,7 @@ export default defineComponent({
     },
     alterarDados(dadosEnvio) {
       this.$api
-        .put(
-          "/lojas/" + this.form.uuid_loja,
-          dadosEnvio
-        )
+        .put("/lojas/" + this.form.uuid_loja, dadosEnvio)
         .then((response) => {
           console.log(response);
           this.listagem();
