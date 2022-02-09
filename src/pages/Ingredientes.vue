@@ -103,9 +103,8 @@
             <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
-                  <input type="hidden" :value="info.uuid_ingrediente" />
-                  <div class="text-h6">{{ info.nm_ingrediente }}</div>
-                  <div class="text-subtitle2">{{ info.obs_ingrediente }}</div>
+                  <TituloCard :titulo="info.nm_ingrediente" />
+                  <TextoCard :titulo="info.obs_ingrediente" />
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -130,6 +129,8 @@
 import { ref } from "vue";
 import { defineComponent } from "vue";
 import TituloPagina from "components/TituloPagina.vue";
+import TituloCard from "components/TituloCard.vue";
+import TextoCard from "components/TextoCard.vue";
 import PesquisarRegistro from "components/PesquisarRegistro.vue";
 
 export default defineComponent({
@@ -152,6 +153,8 @@ export default defineComponent({
   components: {
     TituloPagina,
     PesquisarRegistro,
+    TituloCard,
+    TextoCard,
   },
 
   computed: {

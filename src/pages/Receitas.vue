@@ -95,7 +95,9 @@
                   </div>
                 </div>
               </q-form>
+              <CardReceita :titulo="form.nm_receita" v-if="novo" :ingredientes="ingredienteReceita" :preparo="preparoReceita"/>
             </div>
+
           </q-tab-panel>
 
           <q-tab-panel name="ingredientes">
@@ -189,13 +191,13 @@
               </q-form>
               <br />
 
-              <q-markup-table v-if="ingredienteReceita">
+              <q-markup-table v-if="ingredienteReceita" grid>
                 <thead class="bg-black text-white">
                   <tr>
-                    <th class="text-left">Passo</th>
-                    <th class="text-left">Ingrediente</th>
+                    <th class="text-left" style="max-width:10px;">Passo</th>
+                    <th class="text-left" style="max-width:50px;">Ingrediente</th>
                     <th class="text-right">Quantidade</th>
-                    <th class="text-right">Excluir</th>
+                    <th class="text-right" style="max-width:10px;">Excluir</th>
                   </tr>
                 </thead>
                 <tbody
@@ -327,9 +329,8 @@
         class="col-md-6 col-xs-12"
         style="
           padding: 10px;
-          border: solid 1px black;
           overflow-y: scroll;
-          height: 600px;
+          height: 768px;
         "
       >
         <div
@@ -379,6 +380,8 @@ import { ref } from "vue";
 import { defineComponent } from "vue";
 import TituloPagina from "components/TituloPagina.vue";
 import PesquisarRegistro from "components/PesquisarRegistro.vue";
+import CardReceita from "components/CardReceita.vue";
+
 export default defineComponent({
   name: "PageReceitas",
   data() {
@@ -430,6 +433,7 @@ export default defineComponent({
   components: {
     TituloPagina,
     PesquisarRegistro,
+    CardReceita
   },
 
   created() {
@@ -583,7 +587,7 @@ export default defineComponent({
       this.incluirRIngrediente();
     },
     incluirRIngrediente() {
-      alert(this.formIngredienteReceita.fixa);
+     
       const dadosEnvio = {
         qtde_ingrediente: this.formIngredienteReceita.qtde_ingrediente,
         status_ingrediente: "true",
