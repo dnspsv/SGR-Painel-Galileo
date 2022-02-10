@@ -5,9 +5,7 @@
         <div class="col">
           <TituloCard :titulo="titulo" />
         </div>
-        <div>
-          <q-btn size="xs" round icon="open_in_full" color="black" title="Tela Inteira" @click="telaInteira" />
-        </div>
+        <div></div>
       </div>
       <q-separator />
 
@@ -54,13 +52,28 @@
     </q-card-section>
 
     <q-separator />
-    <q-card-actions align="right">
+    <q-card-actions align="right" class="bg-white">
+      <q-input
+        outlined
+        clearable
+        type="text"
+        v-model="qtde_produzir"
+        label="Quantidade a ser produzida em KG"
+        color="black"
+        :rules="[(val) => !!val || 'Campo Obrigatório']"
+        style="width: 100%"
+      >
+        <template v-slot:prepend>
+          <q-icon name="library_books" />
+        </template>
+      </q-input>
       <q-btn
-        title="Ver resultado da receita"
-        label="Ver Resultado"
+        title="Produzir Receita"
+        label="Produzir Receita"
         color="black"
         class="float-left"
-        icon="edit"
+        icon="miscellaneous_services"
+        @click="produzir"
       />
     </q-card-actions>
   </q-card>
@@ -73,7 +86,11 @@ import TextoCard from "components/TextoCard.vue";
 
 export default defineComponent({
   name: "CardReceita",
-
+  data() {
+    return {
+      qtde_produzir: "",
+    };
+  },
   props: {
     titulo: {
       type: String,
@@ -95,11 +112,17 @@ export default defineComponent({
   mounted() {
     console.log(this.preparo);
   },
-  methods:{
-    telaInteira(){
-       this.$router.push({ name: "telaReceita" });
-    }
-  }
+  methods: {
+    produzir() {
+      if (this.qtde_produzir !== "0") {
+        this.ingredientes.forEach((ingrediente) => {
+          ingrediente.qtde_ingrediente = (
+            this.qtde_produzir * ingrediente.qtde_ingrediente
+          ).toFixed(3);
+        });
+      }
+    },
+  },
 });
 </script>
 <style scoped lang="scss">

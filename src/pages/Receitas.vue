@@ -6,6 +6,7 @@
           <q-tab name="receitas" icon="work" label="Receitas" />
           <q-tab name="ingredientes" icon="list" label="Itens" />
           <q-tab name="preparo" icon="edit" label="Preparo" />
+          <q-tab name="resultado" icon="verified" label="Resultado" />
         </q-tabs>
 
         <q-separator />
@@ -95,9 +96,7 @@
                   </div>
                 </div>
               </q-form>
-              <CardReceita :titulo="form.nm_receita" v-if="novo" :ingredientes="ingredienteReceita" :preparo="preparoReceita"/>
             </div>
-
           </q-tab-panel>
 
           <q-tab-panel name="ingredientes">
@@ -194,10 +193,12 @@
               <q-markup-table v-if="ingredienteReceita" grid>
                 <thead class="bg-black text-white">
                   <tr>
-                    <th class="text-left" style="max-width:10px;">Passo</th>
-                    <th class="text-left" style="max-width:50px;">Ingrediente</th>
+                    <th class="text-left" style="max-width: 10px">Passo</th>
+                    <th class="text-left" style="max-width: 50px">
+                      Ingrediente
+                    </th>
                     <th class="text-right">Quantidade</th>
-                    <th class="text-right" style="max-width:10px;">Excluir</th>
+                    <th class="text-right" style="max-width: 10px">Excluir</th>
                   </tr>
                 </thead>
                 <tbody
@@ -322,16 +323,21 @@
               </q-markup-table>
             </div>
           </q-tab-panel>
+
+          <q-tab-panel name="resultado">
+            <CardReceita
+              :titulo="form.nm_receita"
+              v-if="novo"
+              :ingredientes="ingredienteReceita"
+              :preparo="preparoReceita"
+            />
+          </q-tab-panel>
         </q-tab-panels>
       </div>
 
       <div
         class="col-md-6 col-xs-12"
-        style="
-          padding: 10px;
-          overflow-y: scroll;
-          height: 768px;
-        "
+        style="padding: 10px; overflow-y: scroll; height: 768px"
       >
         <div
           class="q-pa-md row items_start q-gutter-md flex flex-center"
@@ -433,7 +439,7 @@ export default defineComponent({
   components: {
     TituloPagina,
     PesquisarRegistro,
-    CardReceita
+    CardReceita,
   },
 
   created() {
@@ -587,7 +593,6 @@ export default defineComponent({
       this.incluirRIngrediente();
     },
     incluirRIngrediente() {
-     
       const dadosEnvio = {
         qtde_ingrediente: this.formIngredienteReceita.qtde_ingrediente,
         status_ingrediente: "true",

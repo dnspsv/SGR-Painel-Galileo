@@ -49,12 +49,7 @@ const routes = [
         path: "unidades",
         name: "unidades",
         component: () => import("pages/unidades.vue"),
-      },
-      {
-        path: "telaReceita",
-        name: "telaReceita",
-        component: () => import("pages/ReceitaTelaInteira.vue"),
-      },
+      }
     ],
   },
   // Always leave this as last one,
