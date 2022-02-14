@@ -579,6 +579,7 @@ export default defineComponent({
       await this.listagemPreparo(dados.uuid_receita);
       this.form.uuid_receita = dados.uuid_receita;
       this.form.nm_receita = dados.nm_receita;
+      this.form.prioridade = dados.prioridade_receita;
       this.novo = true;
 
       //console.log(this.ingredienteReceita);
@@ -607,6 +608,7 @@ export default defineComponent({
       const dadosParaEnvio = {
         nm_receita: this.form.nm_receita,
         uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
+        prioridade_receita: this.form.prioridade,
         status_receita: this.form.ativar,
       };
 
