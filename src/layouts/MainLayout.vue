@@ -44,14 +44,10 @@
         />
       </q-list>
       <br/>
-      <div class="flex justify-center text-red text-caption">
-        Sistema em Desenvolvimento
-        <br/>
-        Os dados inclusos poderão ser perdidos
-      </div>
-      <br/>
+   
       <q-separator/>
-      <div class="flex justify-center text-black text-h6">versão {{ $q.version }}</div>
+      <br/>
+      <div class="flex justify-center text-black text-subtitle2">Versão 1.0.1 </div>
     </q-drawer>
 
     <q-page-container>
@@ -76,13 +72,6 @@ const linksList = [
     caption: "Gerenciamneto das receitas",
     icon: "work",
     link: "autorizado/receitas",
-    funcaoMenu: (msg) => {},
-  },
-  {
-    title: "Lojas",
-    caption: "Lojas conectadas",
-    icon: "store",
-    link: "autorizado/lojas",
     funcaoMenu: (msg) => {},
   },
   {

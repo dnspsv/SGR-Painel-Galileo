@@ -40,11 +40,11 @@ const routes = [
         name: "usuarios",
         component: () => import("pages/usuarios.vue"),
       },
-      {
+   /*    {
         path: "lojas",
         name: "lojas",
         component: () => import("pages/lojas.vue"),
-      },
+      }, */
       {
         path: "unidades",
         name: "unidades",

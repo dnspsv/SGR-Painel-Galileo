@@ -23,7 +23,7 @@
                 (val && val.length > 0) ||
                 'O nome do ingrediente é obrigatório',
             ]"
-            style="text-transform: uppercase"
+           
           >
             <template v-slot:prepend>
               <q-icon name="view_array" />
@@ -38,7 +38,7 @@
             label="Observações"
             class="col-md-12 col-sm-12 col-xs-12"
             color="black"
-            style="text-transform: uppercase; padding-bottom: 15px"
+            style="padding-bottom: 15px"
           >
             <template v-slot:prepend>
               <q-icon name="note_add" />

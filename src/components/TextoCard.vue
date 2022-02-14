@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-left">
-    <p class="text-subtitle2" id="textoCard">{{ titulo }}</p>
+    <p class="text-subtitle2" id="textoCard"  style="margin:0px;">{{ titulo }}</p>
   </div>
 </template>
 

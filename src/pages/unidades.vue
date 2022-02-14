@@ -23,7 +23,7 @@
                 (val && val.length === 2) ||
                 'O tipo da unidade é obrigatório e máximo 2 digitos',
             ]"
-            style="text-transform: uppercase"
+            
           >
             <template v-slot:prepend>
               <q-icon name="view_array" />

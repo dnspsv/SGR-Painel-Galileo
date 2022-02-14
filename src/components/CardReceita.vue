@@ -1,14 +1,13 @@
 <template>
   <q-card class="my-card bg-grey-3">
     <q-card-section>
-      <div class="row q-col-gutter-md">
-        <div class="col">
+      <div class="row q-col-gutter-md" align="right">
+        <div class="row">
           <TituloCard :titulo="titulo" />
         </div>
-        <div></div>
       </div>
       <q-separator />
-
+      <br />
       <TextoCard
         titulo="Ingredientes"
         style="margin-bottom: 0px; padding: 5px; height: 30px"
@@ -23,7 +22,7 @@
           <div class="col" style="margin-top: 0px">
             <span> {{ info.tb_ingrediente.nm_ingrediente }}</span>
           </div>
-          <TextoCard :titulo="info.qtde_ingrediente + ' /'" />
+          <TextoCard :titulo="info.qtde_ingrediente.replace('.', ',') + ' /'" />
           <TextoCard :titulo="info.tb_ingrediente.tb_unidade.sigla_unidade" />
         </div>
       </div>
@@ -41,7 +40,7 @@
         :key="info.uuid_preparo"
         style="width: 100%; padding: 10px"
       >
-        <div class="row" style="height: 5px">
+        <div class="row">
           <div class="col" style="margin-top: 0px">
             <TextoCard
               :titulo="info.ordem_Receita + ' - ' + info.preparo_Receita"
@@ -67,6 +66,7 @@
           <q-icon name="library_books" />
         </template>
       </q-input>
+
       <q-btn
         title="Produzir Receita"
         label="Produzir Receita"
@@ -110,16 +110,20 @@ export default defineComponent({
     TextoCard,
   },
   mounted() {
-    console.log(this.preparo);
+    // console.log(this.preparo);
   },
   methods: {
     produzir() {
-      if (this.qtde_produzir !== "0") {
+      if (this.qtde_produzir > 1) {
         this.ingredientes.forEach((ingrediente) => {
-          ingrediente.qtde_ingrediente = (
-            this.qtde_produzir * ingrediente.qtde_ingrediente
-          ).toFixed(3);
+          if (ingrediente.qtde_fixa === false) {
+            ingrediente.qtde_ingrediente = (
+              this.qtde_produzir * ingrediente.qtde_ingrediente
+            ).toFixed(3);
+          }
         });
+      } else {
+        document.querySelector("#resetarReceita").click();
       }
     },
   },

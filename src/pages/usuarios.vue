@@ -22,7 +22,6 @@
               (val) =>
                 (val && val.length > 0) || 'O nome do usuário é obrigatório ',
             ]"
-            style="text-transform: uppercase"
           >
             <template v-slot:prepend>
               <q-icon name="person" />
@@ -40,7 +39,6 @@
             :rules="[
               (val) => (val && val.length > 0) || 'O email é obrigatório ',
             ]"
-            style="text-transform: uppercase"
           >
             <template v-slot:prepend>
               <q-icon name="email" />
@@ -48,18 +46,26 @@
           </q-input>
 
           <q-input
+            v-model="form.senha_usuario"
             outlined
             clearable
-            type="password"
-            v-model="form.senha_usuario"
-            label="senha"
+            
+            :type="isPwd ? 'password' : 'text'"
+         
+            label="Senha"
             class="col-md-12 col-sm-12 col-xs-12"
             color="black"
             :rules="[
               (val) => (val && val.length > 0) || 'A senha é obrigatório ',
             ]"
-            style="text-transform: uppercase"
           >
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
             <template v-slot:prepend>
               <q-icon name="password" />
             </template>
@@ -94,8 +100,9 @@
             style="width: 280px"
             :rules="[(val) => val || 'Selecione um nível é obrigatório']"
           />
+
           <div class="q-pb-lg">
-            <q-toggle color="black" v-model="dense" label="Ativar Usuário" />
+            <q-toggle color="black" v-model="form.status_usuario" :label="form.status_usuario?'Usuário ativo':'Usuário Desativado'" />
           </div>
 
           <div class="col-12">
@@ -189,6 +196,7 @@ export default defineComponent({
       dense: ref(true),
       model: ref(null),
       dados: [],
+      isPwd:true,
       niveis: [
         {
           label: "Loja",
@@ -207,7 +215,7 @@ export default defineComponent({
         senha_usuario: "",
         telefone: "",
         nivel_usuario: "",
-        status_usuario: "",
+        status_usuario: true,
       },
     };
   },
@@ -245,7 +253,7 @@ export default defineComponent({
       this.form.uuid_usuario = dados.uuid_usuario;
       this.form.nm_usuario = dados.nm_usuario;
       this.form.email_usuario = dados.email_usuario;
-      this.form.senha_usuario = dados.senha_usuario;
+      //this.form.senha_usuario = dados.senha_usuario;
       this.form.status_usuario = dados.status_usuario;
       this.form.telefone = dados.fone_usuario;
       this.model = this.niveis[dados.nivel_usuario];
@@ -267,7 +275,7 @@ export default defineComponent({
         senha_usuario: this.form.senha_usuario,
         nivel_usuario: data[0].value,
         fone_usuario: this.form.telefone,
-        status_usuario: this.dense,
+        status_usuario: this.form.status_usuario,
       };
 
       if (this.form.uuid_usuario === "") {
@@ -297,6 +305,7 @@ export default defineComponent({
           nivel_usuario: "",
           senha_usuario: "",
           telefone: "",
+          status_usuario:true,
         });
     },
     gravarDados(dadosEnvio) {

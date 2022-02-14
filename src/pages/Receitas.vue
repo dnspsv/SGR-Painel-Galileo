@@ -149,10 +149,14 @@
                   </div>
 
                   <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 3px">
+                    <!-- unmasked-value -->
                     <q-input
                       outlined
                       clearable
                       type="text"
+                      mask="#,###"
+                      reverse-fill-mask
+                      input-class="text-right"
                       v-model="formIngredienteReceita.qtde_ingrediente"
                       label="Quantidade"
                       color="black"
@@ -215,7 +219,7 @@
                     </td>
                     <td class="text-right">
                       {{
-                        info.qtde_ingrediente +
+                        info.qtde_ingrediente.replace(".", ",") +
                         " / " +
                         info.tb_ingrediente.tb_unidade.sigla_unidade
                       }}
@@ -290,7 +294,7 @@
               <q-markup-table v-if="preparoReceita">
                 <thead class="bg-black text-white">
                   <tr>
-                    <th class="text-left">Ordem de preparo</th>
+                    <th class="text-left">Ordem</th>
                     <th class="text-left">Modo de preparar</th>
                     <th class="text-right">Excluir</th>
                   </tr>
@@ -304,8 +308,8 @@
                     <td class="text-left">
                       {{ info.ordem_Receita }}
                     </td>
-                    <td class="text-left">
-                      {{ info.preparo_Receita }}
+                    <td class="text-left" :title="info.preparo_Receita">
+                      {{ info.preparo_Receita.substr(0, 255) }}
                     </td>
 
                     <td class="text-right">
@@ -331,6 +335,18 @@
               :ingredientes="ingredienteReceita"
               :preparo="preparoReceita"
             />
+            <button
+              id="resetarReceita"
+              @click="
+                editar({
+                  uuid_receita: form.uuid_receita,
+                  nm_receita: form.nm_receita,
+                })
+              "
+              style="display: none"
+            >
+              Resetar
+            </button>
           </q-tab-panel>
         </q-tab-panels>
       </div>
@@ -357,10 +373,17 @@
             <q-card class="my-card bg-grey-2" bordered>
               <q-card-section class="flex flex-rigth">
                 <div class="column">
-                  <div class="text-h6">{{ info.nm_receita }}</div>
-                  <div class="text-subtitle2">
-                    Prioridade: {{ info.prioridade_receita }}
-                  </div>
+                  <TituloCard :titulo="info.nm_receita" />
+                  <TextoCard
+                    :titulo="'Prioridade: ' + info.prioridade_receita"
+                  />
+                  <TextoCard
+                    :titulo="
+                      info.status_receita
+                        ? 'Receita Ativa'
+                        : 'Receita Desativada'
+                    "
+                  />
                 </div>
               </q-card-section>
               <q-card-actions align="right">
@@ -387,6 +410,8 @@ import { defineComponent } from "vue";
 import TituloPagina from "components/TituloPagina.vue";
 import PesquisarRegistro from "components/PesquisarRegistro.vue";
 import CardReceita from "components/CardReceita.vue";
+import TituloCard from "components/TituloCard.vue";
+import TextoCard from "components/TextoCard.vue";
 
 export default defineComponent({
   name: "PageReceitas",
@@ -419,30 +444,27 @@ export default defineComponent({
         fixa: false,
       },
       formPreparo: {
-        niveis: [
-          { label: 1, value: 1 },
-          { label: 2, value: 2 },
-          { label: 3, value: 3 },
-          { label: 4, value: 4 },
-          { label: 5, value: 5 },
-          { label: 6, value: 6 },
-          { label: 7, value: 7 },
-          { label: 8, value: 8 },
-          { label: 9, value: 9 },
-          { label: 10, value: 10 },
-        ],
+        niveis: [],
         modelPreparo: ref(null),
         nm_modo: "",
       },
     };
   },
   components: {
+    TituloCard,
+    TextoCard,
     TituloPagina,
     PesquisarRegistro,
     CardReceita,
   },
 
   created() {
+    for (let index = 0; index <= 40; index++) {
+      this.formPreparo.niveis.push({
+        label: index,
+        value: index,
+      });
+    }
     this.listagemIngredientes();
   },
 
@@ -520,7 +542,7 @@ export default defineComponent({
       }
 
       this.$q.notify({
-        message: "cadastrado com sucesso",
+        message: "Gravado com sucesso",
         color: "positive",
         icon: "check_circle_outline",
       });
@@ -555,22 +577,25 @@ export default defineComponent({
       this.form.nm_receita = dados.nm_receita;
       this.novo = true;
 
-      console.log(this.ingredienteReceita);
+      //console.log(this.ingredienteReceita);
     },
     incluirReceita() {
       const dadosParaEnvio = {
         nm_receita: this.form.nm_receita,
         uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
         prioridade_receita: this.form.prioridade,
-        status_receita: true,
+        status_receita: this.form.ativar,
       };
 
-      console.log(dadosParaEnvio);
+      // console.log(dadosParaEnvio);
       this.$api
         .post("/receitas", dadosParaEnvio)
         .then((response) => {
-          //console.log(response);
           this.listagem();
+          this.editar({
+            uuid_receita: response.data.uuid_receita,
+            nm_receita: response.data.nm_receita,
+          });
         })
         .catch((error) => console.log(error));
     },
@@ -578,10 +603,10 @@ export default defineComponent({
       const dadosParaEnvio = {
         nm_receita: this.form.nm_receita,
         uuid_usuario: JSON.parse(localStorage.usuario).uuid_usuario,
-        status_receita: true,
+        status_receita: this.form.ativar,
       };
 
-      console.log(dadosParaEnvio);
+      // console.log(dadosParaEnvio);
       this.$api
         .put("/receitas/" + this.form.uuid_receita, dadosParaEnvio)
         .then((response) => {
@@ -594,7 +619,10 @@ export default defineComponent({
     },
     incluirRIngrediente() {
       const dadosEnvio = {
-        qtde_ingrediente: this.formIngredienteReceita.qtde_ingrediente,
+        qtde_ingrediente: this.formIngredienteReceita.qtde_ingrediente.replace(
+          ",",
+          "."
+        ),
         status_ingrediente: "true",
         qtde_fixa: this.formIngredienteReceita.fixa,
         ordem_ingrediente: this.formIngredienteReceita.passo,
@@ -611,6 +639,11 @@ export default defineComponent({
           this.onResetRIngrediente();
         })
         .catch((error) => console.log(error));
+      this.$q.notify({
+        message: "Gravado com sucesso",
+        color: "positive",
+        icon: "check_circle_outline",
+      });
     },
     async onResetRIngrediente() {
       await this.resetFormIngrediente();
@@ -640,13 +673,18 @@ export default defineComponent({
         preparo_Receita: this.formPreparo.nm_modo,
         ordem_Receita: this.formPreparo.modelPreparo.value,
       };
-      console.log(dadosParaEnviar);
+      // console.log(dadosParaEnviar);
       this.$api
         .post("/preparoReceitas", dadosParaEnviar)
         .then((response) => {
           this.listagemPreparo(this.form.uuid_receita);
         })
         .catch((error) => console.log(error));
+      this.$q.notify({
+        message: "Gravado com sucesso",
+        color: "positive",
+        icon: "check_circle_outline",
+      });
       await this.onResetPreparo();
     },
     async onResetPreparo() {
