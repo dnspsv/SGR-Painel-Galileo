@@ -62,6 +62,7 @@
             color="black"
             label="Esquecia a senha"
             style="width: 100%"
+            @click="this.$router.push({ name: 'recuperar' }) "
           />
         </q-card-actions>
       </q-form>

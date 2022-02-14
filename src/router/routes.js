@@ -11,6 +11,7 @@ const routes = [
     },
     children: [
       { path: "", name: "login", component: () => import("pages/login.vue") },
+      { path: "recuperar", name: "recuperar", component: () => import("pages/Recuperar.vue") },
     ],
   },
   {
@@ -40,7 +41,7 @@ const routes = [
         name: "usuarios",
         component: () => import("pages/usuarios.vue"),
       },
-   /*    {
+      /*    {
         path: "lojas",
         name: "lojas",
         component: () => import("pages/lojas.vue"),
@@ -49,7 +50,7 @@ const routes = [
         path: "unidades",
         name: "unidades",
         component: () => import("pages/unidades.vue"),
-      }
+      },
     ],
   },
   // Always leave this as last one,

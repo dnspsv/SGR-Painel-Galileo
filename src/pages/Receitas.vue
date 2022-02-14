@@ -308,8 +308,12 @@
                     <td class="text-left">
                       {{ info.ordem_Receita }}
                     </td>
-                    <td class="text-left" :title="info.preparo_Receita">
-                      {{ info.preparo_Receita.substr(0, 255) }}
+                    <td
+                      class="text-left"
+                      :title="info.preparo_Receita"
+                      style="white-space: pre-wrap"
+                    >
+                      {{ info.preparo_Receita }}
                     </td>
 
                     <td class="text-right">
