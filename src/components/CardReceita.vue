@@ -61,11 +61,23 @@
         color="black"
         :rules="[(val) => !!val || 'Campo Obrigatório']"
         style="width: 100%"
+        :disable="desabilita"
+        id="qtde_produzir"
       >
         <template v-slot:prepend>
           <q-icon name="library_books" />
         </template>
       </q-input>
+
+      <q-btn
+        title="Reiniciar Receita"
+        label="Reiniciar Receita"
+        color="black"
+        class="float-left"
+        icon="history"
+        @click="reiniciar"
+        :disable="!desabilita"
+      />
 
       <q-btn
         title="Produzir Receita"
@@ -74,6 +86,7 @@
         class="float-left"
         icon="miscellaneous_services"
         @click="produzir"
+        :disable="desabilita"
       />
     </q-card-actions>
   </q-card>
@@ -89,6 +102,7 @@ export default defineComponent({
   data() {
     return {
       qtde_produzir: "",
+      desabilita: false,
     };
   },
   props: {
@@ -125,6 +139,11 @@ export default defineComponent({
       } else {
         document.querySelector("#resetarReceita").click();
       }
+      this.desabilita = true;
+    },
+    reiniciar() {
+      document.querySelector("#resetarReceita").click();
+      this.desabilita = false;
     },
   },
 });
